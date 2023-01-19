@@ -1,15 +1,68 @@
-import { IsEmail, IsString } from "class-validator";
+import { Optional } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsStrongPassword,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class UserDTO {
-    @IsString()
-    firstName: string;
+  @ApiProperty({
+    description: 'First name',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(50)
+  firstName: string;
 
-    @IsString()
-    lastName: string;
+  @ApiProperty({
+    description: 'Last name',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(50)
+  lastName: string;
 
-    @IsEmail()
-    email: string;
+  @ApiProperty({
+    description: 'Organization name',
+    required: false,
+  })
+  @IsString()
+  @Optional()
+  @MaxLength(100)
+  organization?: string;
 
-    @IsString()
-    password: string;
+  @ApiProperty({
+    description: 'Organization or personal contact',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(10)
+  @MaxLength(16)
+  phoneNumber: string;
+
+  @ApiProperty({
+    description: 'Organization email',
+    required: true,
+  })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty({
+    description: 'Strong password',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  // @IsStrongPassword()
+  password: string;
 }
