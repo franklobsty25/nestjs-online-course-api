@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
-export class roleCreateDTO {
+export class RoleCreateDTO {
     @ApiProperty({
         required: true,
         description: 'role name',
