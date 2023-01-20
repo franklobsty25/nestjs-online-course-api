@@ -1,21 +1,19 @@
-import { Exclude } from "class-transformer";
-import { User } from "../schemas/user.schema";
+import { Exclude } from 'class-transformer';
 
-export class UserSerializer {
-    readonly firstName: string;
+export interface UserSerializer {
+  readonly id: string;
 
-    readonly lastName: string;
+  readonly firstName: string;
 
-    readonly organization: string;
+  readonly lastName: string;
 
-    readonly phoneNumber: string;
+  readonly organization: string;
 
-    readonly email: string;
+  readonly phoneNumber: string;
 
-    @Exclude()
-    readonly password: string;
+  readonly email: string;
 
-    readonly isDeleted: boolean;
+  readonly isDeleted: boolean;
 
-    readonly isActive: boolean;
+  readonly isActive: boolean;
 }

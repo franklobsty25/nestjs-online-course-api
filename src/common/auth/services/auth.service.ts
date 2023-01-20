@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
+import { verifyPassword } from 'src/common/helpers/hash.password';
 import { User } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/services/user.service';
 import { LoginDTO } from '../dto/login.dto';
@@ -33,13 +34,16 @@ export class AuthService {
   }
 
   async login(loginDTO: LoginDTO): Promise<User> {
-    const user = await this.userService.findByEmail(loginDTO.email);
+    const { email, password } = loginDTO;
 
-    if (!user) throw new NotFoundException();
+    const user: User = await this.userService.findByEmail(email);
 
-    const validPassword = compare(loginDTO.password, user.password);
+    if (!user) throw new NotFoundException(`User with ${ email } not found`);
 
-    if (!validPassword) throw new UnauthorizedException();
+    const validPassword: boolean = await verifyPassword(password, user.password);
+
+    if (!validPassword)
+      throw new UnauthorizedException(`User with ${ email } not authorized`);
 
     return user;
   }

@@ -3,13 +3,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
   MaxLength,
+  minLength,
   MinLength,
 } from 'class-validator';
 
-export class UserDTO {
+export class UserCreateDTO {
   @ApiProperty({
     description: 'First name',
     required: true,
@@ -18,7 +20,7 @@ export class UserDTO {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(50)
-  firstName: string;
+  readonly firstName: string;
 
   @ApiProperty({
     description: 'Last name',
@@ -28,16 +30,16 @@ export class UserDTO {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(50)
-  lastName: string;
+  readonly lastName: string;
 
   @ApiProperty({
     description: 'Organization name',
     required: false,
   })
   @IsString()
-  @Optional()
+  @IsOptional()
   @MaxLength(100)
-  organization?: string;
+  readonly organization?: string;
 
   @ApiProperty({
     description: 'Organization or personal contact',
@@ -47,7 +49,7 @@ export class UserDTO {
   @IsNotEmpty()
   @MinLength(10)
   @MaxLength(16)
-  phoneNumber: string;
+  readonly phoneNumber: string;
 
   @ApiProperty({
     description: 'Organization email',
@@ -55,14 +57,18 @@ export class UserDTO {
   })
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({
-    description: 'Strong password',
+    description: 'String password',
     required: true,
   })
   @IsString()
   @IsNotEmpty()
-  // @IsStrongPassword()
-  password: string;
+  @IsStrongPassword({
+    minLength: 8,
+    minSymbols: 1,
+    minUppercase: 1
+  })
+  readonly password: string;
 }

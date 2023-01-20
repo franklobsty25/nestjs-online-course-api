@@ -14,9 +14,10 @@ import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ResponseService } from 'src/common/response/response.service';
 import { GetUser } from '../decorators/user.decorator';
 import { UserParam, UserParamGuard } from '../decorators/user.param.decorator';
-import { UserDTO } from '../dto/user.dto';
+import { UserCreateDTO } from '../dto/user.create.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
 import { User } from '../schemas/user.schema';
+import { UserSerializer } from '../serialization/user.serialize';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
@@ -30,10 +31,12 @@ export class UserController {
   async register(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() input: UserDTO,
+    @Body() input: UserCreateDTO,
   ): Promise<void> {
     try {
-      const user: User = await this.userService.create(input);
+      const user: UserSerializer = await this.userService.create(input);
+
+      //@TODO: Email verification notification to mail
 
       this.responseService.json(res, 201, 'User created successfully', user);
     } catch (error) {

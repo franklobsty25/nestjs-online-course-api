@@ -50,7 +50,6 @@ export class User {
     required: true,
     type: String,
   })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Prop({

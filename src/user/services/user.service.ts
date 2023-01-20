@@ -2,32 +2,45 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { USER } from 'src/common/constants/schema';
-import { UserDTO } from '../dto/user.dto';
+import { UserCreateDTO } from '../dto/user.create.dto';
 import { User, UserDocument } from '../schemas/user.schema';
-import * as bcrypt from 'bcrypt';
 import { UserUpdateDTO } from '../dto/user.update.dto';
+import { excludeUserPassword } from 'src/common/helpers/hide.password';
+import { hashPassword } from 'src/common/helpers/hash.password';
+import { UserSerializer } from '../serialization/user.serialize';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(USER) private userModel: Model<UserDocument>) {}
 
-  async create(createUserDTO: UserDTO): Promise<User> {
-    const { password } = createUserDTO;
+  async create(createUserDTO: UserCreateDTO): Promise<UserSerializer> {
+    const { firstName, lastName, organization, phoneNumber, email, password } =
+      createUserDTO;
 
-    const hash = await bcrypt.hash(password, 12);
-    createUserDTO.password = hash;
+    const hashed = await hashPassword(password);
 
-    const user: User = await this.userModel.create(createUserDTO);
+    const user: User = await this.userModel.create({
+      firstName,
+      lastName,
+      organization,
+      phoneNumber,
+      email,
+      password: hashed,
+    });
 
-    if (!user) throw new BadRequestException();
+    const serializeUser = excludeUserPassword(user);
 
-    return user;
+    if (!serializeUser) throw new BadRequestException(`User failed to be created`);
+
+    return serializeUser;
   }
 
-  async findAllUsers(): Promise<User[]> {
+  async findAllUsers(): Promise<UserSerializer[]> {
     const users = await this.userModel.find({});
 
-    return users;
+    const serializeUsers = users.map(user => excludeUserPassword(user));
+
+    return serializeUsers;
   }
 
   async findByEmail(email: string): Promise<User> {
