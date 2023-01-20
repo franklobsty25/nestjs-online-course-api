@@ -24,7 +24,6 @@ export class User {
 
   @Prop({
     required: false,
-    maxLength: 100,
     trim: true,
     type: String,
   })
@@ -49,8 +48,8 @@ export class User {
   @Prop({
     required: true,
     type: String,
+    select: false,
   })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Prop({
@@ -67,7 +66,6 @@ export class User {
     type: Boolean,
   })
   isActive: boolean;
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

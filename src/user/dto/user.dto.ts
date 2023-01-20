@@ -1,8 +1,8 @@
-import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
   MaxLength,
@@ -35,8 +35,8 @@ export class UserDTO {
     required: false,
   })
   @IsString()
-  @Optional()
   @MaxLength(100)
+  @IsOptional()
   organization?: string;
 
   @ApiProperty({
