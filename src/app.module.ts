@@ -7,7 +7,7 @@ import configuration from './common/env/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ResponseService } from './common/response/response.service';
 import { AuthModule } from './common/auth/auth.module';
-import { RoleModule } from './role/role.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -16,9 +16,9 @@ import { RoleModule } from './role/role.module';
       load: [configuration],
     }),
     MongooseModule.forRoot(configuration().database),
+    CourseModule,
     UserModule,
     AuthModule,
-    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],

@@ -1,4 +1,3 @@
-import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
@@ -7,7 +6,6 @@ import {
   IsString,
   IsStrongPassword,
   MaxLength,
-  minLength,
   MinLength,
 } from 'class-validator';
 
