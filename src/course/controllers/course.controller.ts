@@ -2,6 +2,7 @@ import { CourseService } from './../services/course.service';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -10,13 +11,10 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { diskStorage } from 'multer';
-import fs from 'fs';
 import { Request, Response, Express } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { extname } from 'path';
 
 @Controller('course')
 export class CourseController {
@@ -26,25 +24,7 @@ export class CourseController {
   ) {}
 
   @Post('create')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        // destination: (req, file, cb) => {
-        //   const path = 'uploads/';
-        //   fs.mkdirSync(path, { recursive: true });
-        //   return cb(null, path);
-        // },
-        destination: 'uploads/',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const fileName = `${file.originalname}-${uniqueSuffix}${ext}`;
-          cb(null, fileName);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   async createCourse(
     @Req() req: Request,
     @Res() res: Response,
@@ -52,14 +32,11 @@ export class CourseController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<any> {
     try {
-      const newCourse = await this.courseService.createCourse({
-        ...body,
-        resourceUrl: file.path,
-      });
+      const newCourse = await this.courseService.createCourse(body, file);
 
       this.responseService.json(
         res,
-        200,
+        201,
         'course created successfully',
         newCourse,
       );
@@ -91,6 +68,21 @@ export class CourseController {
         res,
         200,
         'course fetched successfully',
+        course,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @Delete('/list/:id')
+  async deleteCourse(@Res() res: Response, @Param() id: string): Promise<any> {
+    try {
+      const course = await this.courseService.deleteCourse(id);
+      this.responseService.json(
+        res,
+        200,
+        'course deleted successfully',
         course,
       );
     } catch (error) {

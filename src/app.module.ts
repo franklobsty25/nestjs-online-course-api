@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ResponseService } from './common/response/response.service';
 import { AuthModule } from './common/auth/auth.module';
 import { CourseModule } from './course/course.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CourseModule } from './course/course.module';
     CourseModule,
     UserModule,
     AuthModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],
