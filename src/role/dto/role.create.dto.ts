@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { ROLE_ENUM } from "src/common/constants/role.enum.constant";
 
 export class RoleCreateDTO {
     @ApiProperty({
@@ -12,7 +13,7 @@ export class RoleCreateDTO {
     @MinLength(3)
     @MaxLength(30)
     @Type(() => String)
-    name: string;
+    readonly name: ROLE_ENUM;
 
     @ApiProperty({
         required: false,
@@ -20,6 +21,6 @@ export class RoleCreateDTO {
     })
     @IsString()
     @IsArray()
-    @IsNotEmpty()
-    permissions: string[];
+    @IsOptional()
+    readonly permissions: string[];
 }

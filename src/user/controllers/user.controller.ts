@@ -45,7 +45,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/')
+  @Get('list')
   async fetchUsers(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const users = await this.userService.findAllUsers();
@@ -68,7 +68,7 @@ export class UserController {
 
   @UserParamGuard()
   @UseGuards(JwtAuthGuard)
-  @Put('/:id')
+  @Put('/:id/update')
   async updateUser(
     @UserParam() user: User,
     @Req() req: Request,
@@ -91,7 +91,7 @@ export class UserController {
 
   @UserParamGuard()
   @UseGuards(JwtAuthGuard)
-  @Delete('/:id')
+  @Delete('/:id/delete')
   async deleteUser(
     @UserParam() user: User,
     @Req() req: Request,

@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { USER } from "src/common/constants/schema";
+import { ROLE_ENUM } from "src/common/constants/role.enum.constant";
+import { USER } from "src/common/constants/schema.constant";
 import { User } from "src/user/schemas/user.schema";
+import * as mongoose from "mongoose";
 
 export type RoleDocument = HydratedDocument<Role>;
 
@@ -9,13 +11,14 @@ export type RoleDocument = HydratedDocument<Role>;
 export class Role {
     @Prop({
         required: true,
-        description: 'Role name',
+        description: 'role name',
         type: String,
     })
-    name: string;
+    name: ROLE_ENUM;
 
     @Prop({
         required: true,
+        default: [],
         description: 'permissions',
         type: Array<string>,
     })
@@ -30,18 +33,19 @@ export class Role {
 
     @Prop({
         required: true,
-        default: true,
+        default: false,
         type: Boolean,
     })
     isDeleted: boolean;
 
     @Prop({
         required: true,
-        description: 'user reference',
-        type: String,
+        description: 'creator',
+        index: true,
+        type: mongoose.Schema.Types.ObjectId,
         ref: USER,
     })
-    user: User;
+    creator: User;
 
 }
 
