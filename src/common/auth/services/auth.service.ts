@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { verifyPassword } from 'src/common/helpers/hash.password';
+import { hasVerifyPassword } from 'src/common/helpers/hash.password';
 import { User } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/services/user.service';
 import { LoginDTO } from '../dto/login.dto';
@@ -40,10 +40,10 @@ export class AuthService {
 
     if (!user) throw new NotFoundException(`User with ${ email } not found`);
 
-    const validPassword: boolean = await verifyPassword(password, user.password);
+    const validPassword: boolean = await hasVerifyPassword(password, user.password);
 
     if (!validPassword)
-      throw new UnauthorizedException(`User with ${ email } not authorized`);
+      throw new UnauthorizedException(`User with ${ email } password incorrect`);
 
     return user;
   }
