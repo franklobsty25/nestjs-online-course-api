@@ -42,14 +42,4 @@ export class CreateCourseDto {
   @IsString()
   @IsOptional()
   resourceUrl: string;
-
-  @ApiProperty({
-    description: 'status',
-    required: true,
-    default: COURSESTATUS.Pending,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  status: COURSESTATUS;
 }
