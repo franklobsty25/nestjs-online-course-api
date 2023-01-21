@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { HASH_LENGTH_KEY } from '../constants/hash.constants';
+import { HASH_LENGTH_KEY } from '../constants/hash.constant';
 
 export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, HASH_LENGTH_KEY);
