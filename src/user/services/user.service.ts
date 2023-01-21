@@ -10,12 +10,10 @@ import { USER } from 'src/common/constants/schema.constant';
 import { UserCreateDTO } from '../dto/user.create.dto';
 import { User, UserDocument } from '../schemas/user.schema';
 import { UserUpdateDTO } from '../dto/user.update.dto';
-import { excludeUserPassword } from 'src/common/helpers/hide.password';
 import {
   hashPassword,
   hasVerifyPassword,
 } from 'src/common/helpers/hash.password';
-import { UserSerializer } from '../serialization/user.serialize';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
@@ -29,7 +27,7 @@ export class UserService {
     private readonly roleService: RoleService,
   ) {}
 
-  async create(createUserDTO: UserCreateDTO): Promise<UserSerializer> {
+  async create(createUserDTO: UserCreateDTO): Promise<User> {
     const { firstName, lastName, organization, phoneNumber, email, password } =
       createUserDTO;
 
@@ -55,12 +53,10 @@ export class UserService {
       throw new Error('Email already exist');
     }
 
-    const serializeUser: UserSerializer = excludeUserPassword(user);
-
-    if (!serializeUser)
+    if (!user)
       throw new BadRequestException(`User failed to be created`);
 
-    return serializeUser;
+    return user;
   }
 
   async createAdmin(role: Role): Promise<User> {
@@ -79,22 +75,22 @@ export class UserService {
     return user;
   }
 
-  async findAllUsers(): Promise<UserSerializer[]> {
+  async findAllUsers(): Promise<User[]> {
     const users: User[] = await this.userModel.find({});
 
-    const serializeUsers = users.map((user) => excludeUserPassword(user));
-
-    return serializeUsers;
+    return users;
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user: User = await this.userModel.findOne({ email });
+    const user: User = await this.userModel
+      .findOne({ email })
+      .select('+password');
 
     return user;
   }
 
   async findById(id: string): Promise<User> {
-    const user: User = await this.userModel.findById(id);
+    const user: User = await this.userModel.findById(id).select('+password');
 
     return user;
   }
@@ -187,7 +183,7 @@ export class UserService {
     return adminDeleted;
   }
 
-  async changeRole(email: string, roleName: string) {
+  async changeRole(email: string, roleName: string): Promise<User> {
     const role: Role = await this.roleService.findOneByName(roleName);
 
     if (!role) throw new NotFoundException(`${roleName} role not found`);
@@ -200,8 +196,6 @@ export class UserService {
 
     if (!user) throw new NotFoundException(`User with ${email} not found`);
 
-    const serialize: UserSerializer = excludeUserPassword(user);
-
-    return serialize;
+    return user;
   }
 }

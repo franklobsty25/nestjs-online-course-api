@@ -14,7 +14,6 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
-import { excludeUserPassword } from 'src/common/helpers/hide.password';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
@@ -26,7 +25,6 @@ import { UserCreateDTO } from '../dto/user.create.dto';
 import { UserRoleDTO } from '../dto/user.role.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
 import { User } from '../schemas/user.schema';
-import { UserSerializer } from '../serialization/user.serialize';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
@@ -68,7 +66,7 @@ export class UserController {
     @Body() input: UserCreateDTO,
   ): Promise<void> {
     try {
-      const user: UserSerializer = await this.userService.create(input);
+      const user: User = await this.userService.create(input);
 
       //@TODO: Email verification notification to mail
 
@@ -94,9 +92,7 @@ export class UserController {
   @Get('user')
   userProfile(@GetUser() user: User, @Res() res: Response): void {
     try {
-      const serialize = excludeUserPassword(user);
-
-      this.responseService.json(res, 200, 'User profile found', serialize);
+      this.responseService.json(res, 200, 'User profile found', user);
     } catch (error) {
       this.responseService.json(res, error);
     }
@@ -109,7 +105,7 @@ export class UserController {
     @Res() res: Response,
     @GetUser() user: User,
     @Body() input: UserChangePasswordDTO,
-  ) {
+  ): Promise<void> {
     try {
       const userPasswordUpdated = await this.userService.changePassword(
         user,
@@ -138,9 +134,7 @@ export class UserController {
     try {
       const activeUser: User = await this.userService.active(user);
 
-      const serialize: UserSerializer = excludeUserPassword(activeUser);
-
-      this.responseService.json(res, 201, 'User active', serialize);
+      this.responseService.json(res, 201, 'User active', activeUser);
     } catch (error) {
       this.responseService.json(res, error);
     }
@@ -157,19 +151,16 @@ export class UserController {
     try {
       const inactiveUser: User = await this.userService.inactive(user);
 
-      const serialize: UserSerializer = excludeUserPassword(inactiveUser);
-
-      this.responseService.json(res, 201, 'User inactive', serialize);
+      this.responseService.json(res, 201, 'User inactive', inactiveUser);
     } catch (error) {
       this.responseService.json(res, error);
     }
   }
 
-  @UserParamGuard()
   @UseGuards(JwtAuthGuard)
-  @Put(':id/update')
+  @Put('update')
   async updateUser(
-    @UserParam() user: User,
+    @GetUser() user: User,
     @Req() req: Request,
     @Res() res: Response,
     @Body() input: UserUpdateDTO,
@@ -177,13 +168,11 @@ export class UserController {
     try {
       const updatedUser: User = await this.userService.update(user, input);
 
-      const serialize: UserSerializer = excludeUserPassword(updatedUser);
-
       this.responseService.json(
         res,
         201,
         'User profile updated successfully',
-        serialize,
+        updatedUser,
       );
     } catch (error) {
       this.responseService.json(res, error);
@@ -201,13 +190,11 @@ export class UserController {
     try {
       const deletedUser: User = await this.userService.delete(user);
 
-      const serialize: UserSerializer = excludeUserPassword(deletedUser);
-
       this.responseService.json(
         res,
         200,
         'User deleted successfully',
-        serialize,
+        deletedUser,
       );
     } catch (error) {
       this.responseService.json(res, error);
@@ -222,7 +209,7 @@ export class UserController {
     @Body() input: UserRoleDTO,
   ) {
     try {
-      const user: UserSerializer = await this.userService.changeRole(
+      const user: User = await this.userService.changeRole(
         input.email,
         input.role,
       );
