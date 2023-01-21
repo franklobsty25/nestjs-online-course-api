@@ -10,6 +10,7 @@ export function excludeUserPassword(user: any): UserSerializer {
     email: user.email,
     isDeleted: user.isDeleted,
     isActive: user.isActive,
+    role: user.role,
   };
 
   return serializeUser;

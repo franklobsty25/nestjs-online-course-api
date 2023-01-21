@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -16,10 +17,16 @@ import {
 } from 'src/common/helpers/hash.password';
 import { UserSerializer } from '../serialization/user.serialize';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
+import { Role } from 'src/role/schemas/role.schema';
+import { RoleService } from 'src/role/services/role.service';
+import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(USER) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(USER) private userModel: Model<UserDocument>,
+    private readonly roleService: RoleService,
+  ) {}
 
   async create(createUserDTO: UserCreateDTO): Promise<UserSerializer> {
     const { firstName, lastName, organization, phoneNumber, email, password } =
@@ -27,14 +34,23 @@ export class UserService {
 
     const hashed: string = await hashPassword(password);
 
-    const user: User = await this.userModel.create({
-      firstName,
-      lastName,
-      organization,
-      phoneNumber,
-      email,
-      password: hashed,
-    });
+    const role: Role = await this.roleService.findOneByName(ROLE_ENUM.User);
+
+    let user: User;
+
+    try {
+      user = await this.userModel.create({
+        firstName,
+        lastName,
+        organization,
+        phoneNumber,
+        email,
+        password: hashed,
+        role,
+      });
+    } catch (error) {
+      throw new Error('Email already exist');
+    }
 
     const serializeUser: UserSerializer = excludeUserPassword(user);
 
@@ -142,5 +158,23 @@ export class UserService {
     const deleted = await this.userModel.findByIdAndRemove(user._id);
 
     return deleted;
+  }
+
+  async changeRole(email: string, roleName: string) {
+    const role: Role = await this.roleService.findOneByName(roleName);
+
+    if (!role) throw new NotFoundException(`${ roleName } role not found`);
+
+    const user: User = await this.userModel.findOneAndUpdate(
+      { email },
+      { role },
+      { new: true },
+    );
+
+    if (!user) throw new NotFoundException(`User with ${ email } not found`);
+
+    const serialize: UserSerializer = excludeUserPassword(user);
+
+    return serialize;
   }
 }

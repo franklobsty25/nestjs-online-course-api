@@ -70,11 +70,12 @@ export class User {
   isActive: boolean;
 
   @Prop({
+    required: true,
     index: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: ROLE,
   })
-  role: Role
+  role: Role;
 
 }
 

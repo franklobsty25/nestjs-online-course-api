@@ -7,7 +7,6 @@ import {
   IsString,
   IsStrongPassword,
   MaxLength,
-  minLength,
   MinLength,
 } from 'class-validator';
 

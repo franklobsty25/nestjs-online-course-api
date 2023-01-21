@@ -10,5 +10,6 @@ import { ResponseService } from 'src/common/response/response.service';
   imports: [MongooseModule.forFeature([{ name: ROLE, schema: RoleSchema }])],
   providers: [RoleService, ResponseService],
   controllers: [RoleController],
+  exports: [RoleService],
 })
 export class RoleModule {}

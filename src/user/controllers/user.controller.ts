@@ -18,6 +18,7 @@ import { GetUser } from '../decorators/user.decorator';
 import { UserParam, UserParamGuard } from '../decorators/user.param.decorator';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { UserCreateDTO } from '../dto/user.create.dto';
+import { UserRoleDTO } from '../dto/user.role.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
 import { User } from '../schemas/user.schema';
 import { UserSerializer } from '../serialization/user.serialize';
@@ -178,6 +179,18 @@ export class UserController {
         'User deleted successfully',
         serialize,
       );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('admin/change-role')
+  async changeUserRole(@Req() req: Request, @Res() res, @Body() input: UserRoleDTO) {
+    try {
+      const user: UserSerializer = await this.userService.changeRole(input.email, input.role);
+
+      this.responseService.json(res, 200, 'User role changed successfully', user);
     } catch (error) {
       this.responseService.json(res, error);
     }
