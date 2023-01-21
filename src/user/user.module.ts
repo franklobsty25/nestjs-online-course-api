@@ -6,10 +6,11 @@ import { UserSchema } from './schemas/user.schema';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { RoleModule } from 'src/role/role.module';
+import { DB_CONNECTION } from 'src/common/constants/database.constant';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: USER, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: USER, schema: UserSchema }], DB_CONNECTION),
     RoleModule
   ],
   controllers: [UserController],

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Patch,
   Post,
   Put,
@@ -12,8 +13,12 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
+import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 import { excludeUserPassword } from 'src/common/helpers/hide.password';
 import { ResponseService } from 'src/common/response/response.service';
+import { Role } from 'src/role/schemas/role.schema';
+import { RoleService } from 'src/role/services/role.service';
+import { UserAdminGuard } from '../decorators/user.admin.decorator';
 import { GetUser } from '../decorators/user.decorator';
 import { UserParam, UserParamGuard } from '../decorators/user.param.decorator';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
@@ -26,10 +31,35 @@ import { UserService } from '../services/user.service';
 
 @Controller('users')
 export class UserController {
+  private readonly logger = new Logger();
+
   constructor(
     private readonly userService: UserService,
+    private readonly rolesService: RoleService,
     private readonly responseService: ResponseService,
   ) {}
+
+  @Get('default')
+  async creatDefaultAdmin(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const adminRole: Role = await this.rolesService.findOneByName(
+        ROLE_ENUM.Admin,
+      );
+      const admin: User = await this.userService.createAdmin(adminRole);
+
+      this.responseService.json(
+        res,
+        200,
+        'Admin user created successfully',
+        admin,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
 
   @Post('register')
   async register(
@@ -185,14 +215,33 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('admin/change-role')
-  async changeUserRole(@Req() req: Request, @Res() res, @Body() input: UserRoleDTO) {
+  @Patch('role/update')
+  async changeUserRole(
+    @Req() req: Request,
+    @Res() res,
+    @Body() input: UserRoleDTO,
+  ) {
     try {
-      const user: UserSerializer = await this.userService.changeRole(input.email, input.role);
+      const user: UserSerializer = await this.userService.changeRole(
+        input.email,
+        input.role,
+      );
 
-      this.responseService.json(res, 200, 'User role changed successfully', user);
+      this.responseService.json(
+        res,
+        200,
+        'User role changed successfully',
+        user,
+      );
     } catch (error) {
       this.responseService.json(res, error);
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UserAdminGuard()
+  @Patch(':id/status')
+  async courseStatus() {
+    this.logger.log('Approved course status');
   }
 }

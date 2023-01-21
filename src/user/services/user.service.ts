@@ -20,11 +20,12 @@ import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
+import { DB_CONNECTION } from 'src/common/constants/database.constant';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(USER) private userModel: Model<UserDocument>,
+    @InjectModel(USER, DB_CONNECTION) private userModel: Model<UserDocument>,
     private readonly roleService: RoleService,
   ) {}
 
@@ -35,6 +36,8 @@ export class UserService {
     const hashed: string = await hashPassword(password);
 
     const role: Role = await this.roleService.findOneByName(ROLE_ENUM.User);
+
+    if (!role) throw new BadRequestException('Roles does not exist');
 
     let user: User;
 
@@ -58,6 +61,22 @@ export class UserService {
       throw new BadRequestException(`User failed to be created`);
 
     return serializeUser;
+  }
+
+  async createAdmin(role: Role): Promise<User> {
+    const hashed = await hashPassword('Frank@12345?');
+
+    const user: User = await this.userModel.create({
+      firstName: 'Frank',
+      lastName: 'Kodie',
+      organization: 'Bento',
+      phoneNumber: '+233247202968',
+      email: 'frank.adu@bento.africa',
+      password: hashed,
+      role: role,
+    });
+
+    return user;
   }
 
   async findAllUsers(): Promise<UserSerializer[]> {
@@ -160,10 +179,18 @@ export class UserService {
     return deleted;
   }
 
+  async deleteAdmin(): Promise<User> {
+    const adminDeleted = await this.userModel.findOneAndDelete({
+      email: 'frank.adu@bento.africa',
+    });
+
+    return adminDeleted;
+  }
+
   async changeRole(email: string, roleName: string) {
     const role: Role = await this.roleService.findOneByName(roleName);
 
-    if (!role) throw new NotFoundException(`${ roleName } role not found`);
+    if (!role) throw new NotFoundException(`${roleName} role not found`);
 
     const user: User = await this.userModel.findOneAndUpdate(
       { email },
@@ -171,7 +198,7 @@ export class UserService {
       { new: true },
     );
 
-    if (!user) throw new NotFoundException(`User with ${ email } not found`);
+    if (!user) throw new NotFoundException(`User with ${email} not found`);
 
     const serialize: UserSerializer = excludeUserPassword(user);
 

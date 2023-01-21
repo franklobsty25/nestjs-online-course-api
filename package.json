@@ -18,7 +18,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed:role": "nestjs-command seed:role",
+    "seed:user": "nestjs-command seed:user",
+    "rollback:role": "nestjs-command remove:role",
+    "rollback:user": "nestjs-command remove:user",
+    "seed": "yarn seed:role && yarn seed:user",
+    "rollback": "yarn rollback:user && yarn rollback:role"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -36,6 +42,7 @@
     "class-validator": "^0.14.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.8.4",
+    "nestjs-command": "^3.1.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

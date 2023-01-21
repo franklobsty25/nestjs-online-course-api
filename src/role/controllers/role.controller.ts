@@ -29,16 +29,29 @@ export class RoleController {
     private readonly responseService: ResponseService,
   ) {}
 
+  @Get('default')
+  async createDefaultData(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const adminRole: Role = await this.roleService.createDefaultRoles();
+
+      this.responseService.json(res, 200, 'Dummy data created', adminRole);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('create')
   async create(
     @Req() req: Request,
     @Res() res: Response,
-    @GetUser() user: User,
     @Body() input: RoleCreateDTO,
   ): Promise<void> {
     try {
-      const role = await this.roleService.create(user, input);
+      const role = await this.roleService.create(input);
 
       this.responseService.json(res, 201, 'Role created successfully', role);
     } catch (error) {
@@ -135,4 +148,5 @@ export class RoleController {
       this.responseService.json(res, error);
     }
   }
+
 }

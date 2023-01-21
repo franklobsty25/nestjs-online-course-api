@@ -8,6 +8,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ResponseService } from './common/response/response.service';
 import { AuthModule } from './common/auth/auth.module';
 import { RoleModule } from './role/role.module';
+import { MigrationModule } from './common/migration/migration.module';
+import { DB_CONNECTION } from './common/constants/database.constant';
 
 @Module({
   imports: [
@@ -15,10 +17,13 @@ import { RoleModule } from './role/role.module';
       isGlobal: true,
       load: [configuration],
     }),
-    MongooseModule.forRoot(configuration().database),
+    MongooseModule.forRoot(configuration().database, {
+      connectionName: DB_CONNECTION,
+    }),
     UserModule,
     AuthModule,
     RoleModule,
+    MigrationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],
