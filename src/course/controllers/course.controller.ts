@@ -19,7 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteCourseDto } from '../dto/delete-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 
-@Controller('course')
+@Controller('courses')
 export class CourseController {
   constructor(
     private readonly responseService: ResponseService,
@@ -57,7 +57,7 @@ export class CourseController {
     }
   }
 
-  @Get('/list')
+  @Get('list')
   async getCourses(@Res() res: Response): Promise<any> {
     try {
       const courses = await this.courseService.getAllCourses();
@@ -72,7 +72,7 @@ export class CourseController {
     }
   }
 
-  @Get('/list/:id')
+  @Get('/:id')
   async getCourse(@Res() res: Response, @Param() id: string): Promise<any> {
     try {
       const course = await this.courseService.getCourse(id);
@@ -87,7 +87,7 @@ export class CourseController {
     }
   }
 
-  @Delete('/:id')
+  @Delete('/:id/delete')
   async deleteCourse(
     @Res() res: Response,
     @Param() params: DeleteCourseDto,
@@ -106,7 +106,7 @@ export class CourseController {
     }
   }
 
-  @Put('/:id')
+  @Put('/:id/update')
   async updateCourse(
     @Res() res: Response,
     @Body() body: UpdateCourseDto,
