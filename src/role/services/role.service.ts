@@ -45,7 +45,10 @@ export class RoleService {
   async update(role: any, roleUpdateDTO: RoleUpdateDTO): Promise<Role> {
     const newRole: Role = await this.roleModel.findByIdAndUpdate(
       role._id,
-      roleUpdateDTO,
+      {
+        name: roleUpdateDTO.name,
+        accessFor: roleUpdateDTO.name.toUpperCase(),
+      },
       { new: true },
     );
 
