@@ -7,11 +7,12 @@ import { S3Service } from 'src/common/s3/s3.service';
 import { CourseController } from './controllers/course.controller';
 import { CourseSchema } from './schemas/course.schema';
 import { CourseService } from './services/course.service';
-
+import { PaystackModule } from 'nestjs-paystack';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: COURSE, schema: CourseSchema }]),
     S3Module,
+    PaystackModule.forRoot({ apiKey: '' }),
   ],
   providers: [CourseService, ResponseService, S3Service],
   controllers: [CourseController],

@@ -5,12 +5,15 @@ import { Model } from 'mongoose';
 import { COURSE } from 'src/common/constants/schema';
 import { S3Service } from 'src/common/s3/s3.service';
 import { Course, CourseDocument } from '../schemas/course.schema';
+import { InjectPaystack } from 'nestjs-paystack';
+import paystack from 'paystack';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(COURSE) private courseModel: Model<CourseDocument>,
     private s3Service: S3Service,
+    @InjectPaystack() private readonly paystackClient,
   ) {}
 
   async createCourse(body: any, file: Express.Multer.File): Promise<any> {
@@ -34,6 +37,8 @@ export class CourseService {
     const course = await this.courseModel.findOne({ _id: id });
     return course;
   }
+
+  async buyCourse(courseId: string, organizationId: string) {}
 
   async deleteCourse(id: string): Promise<Course> {
     const course = await this.courseModel.findOneAndDelete({ _id: id });
