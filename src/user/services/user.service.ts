@@ -9,19 +9,17 @@ import { USER } from 'src/common/constants/schema';
 import { UserCreateDTO } from '../dto/user.create.dto';
 import { User, UserDocument } from '../schemas/user.schema';
 import { UserUpdateDTO } from '../dto/user.update.dto';
-import { excludeUserPassword } from 'src/common/helpers/hide.password';
 import {
   hashPassword,
   hasVerifyPassword,
 } from 'src/common/helpers/hash.password';
-import { UserSerializer } from '../serialization/user.serialize';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(USER) private userModel: Model<UserDocument>) {}
 
-  async create(createUserDTO: UserCreateDTO): Promise<UserSerializer> {
+  async create(createUserDTO: UserCreateDTO): Promise<User> {
     const { firstName, lastName, organization, phoneNumber, email, password } =
       createUserDTO;
 
@@ -36,30 +34,28 @@ export class UserService {
       password: hashed,
     });
 
-    const serializeUser: UserSerializer = excludeUserPassword(user);
-
-    if (!serializeUser)
+    if (!user)
       throw new BadRequestException(`User failed to be created`);
 
-    return serializeUser;
+    return user;
   }
 
-  async findAllUsers(): Promise<UserSerializer[]> {
+  async findAllUsers(): Promise<User[]> {
     const users: User[] = await this.userModel.find({});
 
-    const serializeUsers = users.map((user) => excludeUserPassword(user));
-
-    return serializeUsers;
+    return users;
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user: User = await this.userModel.findOne({ email });
+    const user: User = await this.userModel
+      .findOne({ email })
+      .select('+password');
 
     return user;
   }
 
   async findById(id: string): Promise<User> {
-    const user: User = await this.userModel.findById(id);
+    const user: User = await this.userModel.findById(id).select('+password');
 
     return user;
   }
