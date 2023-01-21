@@ -5742,7 +5742,6 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-<<<<<<< HEAD
 nestjs-command@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/nestjs-command/-/nestjs-command-3.1.3.tgz#98149d00d32232a2d24cc22f12c13b856753a784"
@@ -5750,12 +5749,11 @@ nestjs-command@^3.1.3:
   dependencies:
     lodash.compact "^3.0.1"
     lodash.flattendeep "^4.4.0"
-=======
+
 nestjs-paystack@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/nestjs-paystack/-/nestjs-paystack-1.0.0.tgz#0dcc05d04522a31b27bf44ac1382cbdffd0104a6"
   integrity sha512-V2zrfSpIPwpRLylaci0VvyGzFzzWaa7IISMvrymxPHPaAa1l5FFKVlx/erv58aEI6jUWb3ul2CtPQZhVlApeyQ==
->>>>>>> course
 
 node-abort-controller@^3.0.1:
   version "3.0.1"
