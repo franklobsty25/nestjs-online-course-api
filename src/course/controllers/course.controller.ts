@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   Res,
   UploadedFile,
@@ -15,6 +16,8 @@ import { Request, Response, Express } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { DeleteCourseDto } from '../dto/delete-course.dto';
+import { UpdateCourseDto } from '../dto/update-course.dto';
 
 @Controller('course')
 export class CourseController {
@@ -75,15 +78,42 @@ export class CourseController {
     }
   }
 
-  @Delete('/list/:id')
-  async deleteCourse(@Res() res: Response, @Param() id: string): Promise<any> {
+  @Delete('/:id')
+  async deleteCourse(
+    @Res() res: Response,
+    @Param() params: DeleteCourseDto,
+  ): Promise<any> {
     try {
-      const course = await this.courseService.deleteCourse(id);
+      const course = await this.courseService.deleteCourse(params.id);
+
       this.responseService.json(
         res,
         200,
         'course deleted successfully',
         course,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @Put('/:id')
+  async updateCourse(
+    @Res() res: Response,
+    @Body() body: UpdateCourseDto,
+    @Param() params: { id: string },
+  ) {
+    try {
+      const updatedCourse = await this.courseService.updateCourse(
+        params.id,
+        body,
+      );
+
+      this.responseService.json(
+        res,
+        200,
+        'course updated successfully',
+        updatedCourse,
       );
     } catch (error) {
       this.responseService.json(res, error);

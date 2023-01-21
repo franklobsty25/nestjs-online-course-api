@@ -1,3 +1,4 @@
+import { UpdateCourseDto } from './../dto/update-course.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -36,6 +37,17 @@ export class CourseService {
 
   async deleteCourse(id: string): Promise<Course> {
     const course = await this.courseModel.findOneAndDelete({ _id: id });
+    return course;
+  }
+
+  async updateCourse(id: string, body: UpdateCourseDto): Promise<Course> {
+    const filter = { _id: id };
+    const update = { ...body };
+
+    const course = await this.courseModel.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
     return course;
   }
 }
