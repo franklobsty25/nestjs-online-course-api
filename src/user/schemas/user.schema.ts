@@ -1,6 +1,8 @@
 import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
-import { Exclude } from 'class-transformer';
 import { HydratedDocument } from 'mongoose';
+import { ROLE } from 'src/common/constants/schema.constant';
+import { Role } from 'src/role/schemas/role.schema';
+import * as mongoose from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -66,6 +68,15 @@ export class User {
     type: Boolean,
   })
   isActive: boolean;
+
+  @Prop({
+    required: true,
+    index: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: ROLE,
+  })
+  role: Role;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { Role } from 'src/role/schemas/role.schema';
 
 export interface UserSerializer {
   readonly id: string;
@@ -16,4 +17,6 @@ export interface UserSerializer {
   readonly isDeleted: boolean;
 
   readonly isActive: boolean;
+
+  readonly role: Role;
 }
