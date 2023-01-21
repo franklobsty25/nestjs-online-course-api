@@ -146,7 +146,7 @@ export class CourseController {
       this.responseService.json(
         res,
         200,
-        `course ${status} successfully`,
+        `course status ${status}`,
         updatedCourse,
       );
     } catch (error) {
