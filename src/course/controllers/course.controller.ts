@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Req,
@@ -18,6 +19,7 @@ import { CreateCourseDto } from '../dto/create-course.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteCourseDto } from '../dto/delete-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
+import { COURSESTATUS } from '../types';
 
 @Controller('courses')
 export class CourseController {
@@ -122,6 +124,29 @@ export class CourseController {
         res,
         200,
         'course updated successfully',
+        updatedCourse,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @Put('/:id/update-status')
+  async updateCourseStatus(
+    @Res() res: Response,
+    @Param() { id }: { id: string },
+    @Body() { status }: { status: COURSESTATUS },
+  ) {
+    try {
+      const updatedCourse = await this.courseService.updateCourseStatus(
+        id,
+        status,
+      );
+
+      this.responseService.json(
+        res,
+        200,
+        `course ${status} successfully`,
         updatedCourse,
       );
     } catch (error) {

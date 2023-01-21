@@ -7,6 +7,7 @@ import { S3Service } from 'src/common/s3/s3.service';
 import { Course, CourseDocument } from '../schemas/course.schema';
 import { InjectPaystack } from 'nestjs-paystack';
 import paystack from 'paystack';
+import { COURSESTATUS } from '../types';
 
 @Injectable()
 export class CourseService {
@@ -48,6 +49,17 @@ export class CourseService {
   async updateCourse(id: string, body: UpdateCourseDto): Promise<Course> {
     const filter = { _id: id };
     const update = { ...body };
+
+    const course = await this.courseModel.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    return course;
+  }
+
+  async updateCourseStatus(id: string, status: COURSESTATUS): Promise<Course> {
+    const filter = { _id: id };
+    const update = { status };
 
     const course = await this.courseModel.findOneAndUpdate(filter, update, {
       new: true,
