@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { UpdateCourseDto } from './../dto/update-course.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -36,6 +37,11 @@ export class CourseService {
 
   async getCourse(id: string): Promise<Course> {
     const course = await this.courseModel.findOne({ _id: id });
+
+    if (!course) {
+      throw new NotFoundException('invalid course id');
+    }
+
     return course;
   }
 
@@ -43,6 +49,10 @@ export class CourseService {
 
   async deleteCourse(id: string): Promise<Course> {
     const course = await this.courseModel.findOneAndDelete({ _id: id });
+
+    if (!course) {
+      throw new NotFoundException('invalid course id');
+    }
     return course;
   }
 
@@ -54,6 +64,10 @@ export class CourseService {
       new: true,
     });
 
+    if (!course) {
+      throw new NotFoundException('invalid course id');
+    }
+
     return course;
   }
 
@@ -64,6 +78,10 @@ export class CourseService {
     const course = await this.courseModel.findOneAndUpdate(filter, update, {
       new: true,
     });
+
+    if (!course) {
+      throw new NotFoundException('invalid course id');
+    }
 
     return course;
   }
