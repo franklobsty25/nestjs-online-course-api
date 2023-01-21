@@ -7,14 +7,18 @@ import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { RoleModule } from 'src/role/role.module';
 import { DB_CONNECTION } from 'src/common/constants/database.constant';
+import { NotificationService } from 'src/common/notification/service/notification.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: USER, schema: UserSchema }], DB_CONNECTION),
-    RoleModule
+    MongooseModule.forFeature(
+      [{ name: USER, schema: UserSchema }],
+      DB_CONNECTION,
+    ),
+    RoleModule,
   ],
   controllers: [UserController],
-  providers: [UserService, ResponseService],
+  providers: [UserService, ResponseService, NotificationService],
   exports: [UserService],
 })
 export class UserModule {}

@@ -61,7 +61,7 @@ export class RoleController {
 
   @UseGuards(JwtAuthGuard)
   @Get('list')
-  async fetchRoles(@Req() req: Request, @Req() res: Response): Promise<void> {
+  async fetchRoles(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const roles: Role[] = await this.roleService.findAll();
 

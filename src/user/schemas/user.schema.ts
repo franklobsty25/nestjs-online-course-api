@@ -50,9 +50,15 @@ export class User {
   @Prop({
     required: true,
     type: String,
-    select: false,
   })
   password: string;
+
+  @Prop({
+    required: true,
+    default: false,
+    type: Boolean,
+  })
+  emailVerification: boolean;
 
   @Prop({
     required: true,
