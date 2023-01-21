@@ -143,6 +143,16 @@ export class UserService {
     return newUser;
   }
 
+  async verifyEmail(email: string): Promise<User> {
+    const user: User = await this.userModel.findOneAndUpdate(
+      { email },
+      { emailVerification: true },
+      { new: true },
+    );
+
+    return user;
+  }
+
   async active(user: any): Promise<User> {
     const activeUser = this.userModel.findByIdAndUpdate(
       user._id,

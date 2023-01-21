@@ -8,6 +8,7 @@ export function excludeUserPassword(user: any): UserSerializer {
     organization: user.organization,
     phoneNumber: user.phoneNumber,
     email: user.email,
+    emailVerification: user.emailVerification,
     isDeleted: user.isDeleted,
     isActive: user.isActive,
     role: user.role,
