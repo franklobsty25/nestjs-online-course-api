@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,6 +15,7 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
+import { NotificationService } from 'src/common/notification/service/notification.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
@@ -35,6 +37,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly rolesService: RoleService,
     private readonly responseService: ResponseService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Get('default')
@@ -68,7 +71,25 @@ export class UserController {
     try {
       const user: User = await this.userService.create(input);
 
-      //@TODO: Email verification notification to mail
+      const message: string = `
+        Please click on the link ${req.protocol}://${req.get(
+        'Host',
+      )}/v1/users/verify?email=${user.email} \n
+        To verify your email address for the registration. \n
+
+        Thank you.
+
+        Bento Technologies Limited
+      `;
+      this.logger.log(
+        `${req.protocol}://${req.get('Host')}/v1/users/verify?email=`,
+      );
+
+      await this.notificationService.sendEmailNotification({
+        email: user.email,
+        subject: 'Email Verification',
+        message: message,
+      });
 
       this.responseService.json(res, 201, 'User created successfully', user);
     } catch (error) {
@@ -80,7 +101,7 @@ export class UserController {
   @Get('list')
   async fetchUsers(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
-      const users = await this.userService.findAllUsers();
+      const users: User[] = await this.userService.findAllUsers();
 
       this.responseService.json(res, 200, 'Users found successfully', users);
     } catch (error) {
@@ -107,7 +128,7 @@ export class UserController {
     @Body() input: UserChangePasswordDTO,
   ): Promise<void> {
     try {
-      const userPasswordUpdated = await this.userService.changePassword(
+      const userPasswordUpdated: User = await this.userService.changePassword(
         user,
         input,
       );
@@ -207,7 +228,7 @@ export class UserController {
     @Req() req: Request,
     @Res() res,
     @Body() input: UserRoleDTO,
-  ) {
+  ): Promise<void> {
     try {
       const user: User = await this.userService.changeRole(
         input.email,
@@ -228,7 +249,27 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @UserAdminGuard()
   @Patch(':id/status')
-  async courseStatus() {
+  async courseStatus(): Promise<void> {
     this.logger.log('Approved course status');
+  }
+
+  @Get('verify')
+  async verifyEmail(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('email') email: string,
+  ): Promise<void> {
+    try {
+      const user: User = await this.userService.verifyEmail(email);
+
+      this.responseService.json(
+        res,
+        200,
+        'Email verified successfully',
+        user,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
   }
 }

@@ -59,6 +59,13 @@ export class User {
     default: false,
     type: Boolean,
   })
+  emailVerification: boolean;
+
+  @Prop({
+    required: true,
+    default: false,
+    type: Boolean,
+  })
   isDeleted: boolean;
 
   @Prop({

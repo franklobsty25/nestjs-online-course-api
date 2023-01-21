@@ -53,8 +53,7 @@ export class UserService {
       throw new Error('Email already exist');
     }
 
-    if (!user)
-      throw new BadRequestException(`User failed to be created`);
+    if (!user) throw new BadRequestException(`User failed to be created`);
 
     return user;
   }
@@ -136,7 +135,21 @@ export class UserService {
       },
     );
 
+    if (!newUser) throw new BadRequestException('User update failed');
+
     return newUser;
+  }
+
+  async verifyEmail(email: string): Promise<User> {
+    const user: User = await this.userModel.findOneAndUpdate(
+      { email },
+      { emailVerification: true },
+      { new: true },
+    );
+
+    if (!user) throw new NotFoundException(`User with ${email} not found`);
+
+    return user;
   }
 
   async active(user: any): Promise<User> {
