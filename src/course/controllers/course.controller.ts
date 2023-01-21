@@ -75,7 +75,10 @@ export class CourseController {
   }
 
   @Get('/:id')
-  async getCourse(@Res() res: Response, @Param() id: string): Promise<any> {
+  async getCourse(
+    @Res() res: Response,
+    @Param() { id }: { id: string },
+  ): Promise<any> {
     try {
       const course = await this.courseService.getCourse(id);
       this.responseService.json(
