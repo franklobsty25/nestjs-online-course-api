@@ -24,4 +24,15 @@ export class OrganizationService {
     }
     return organization;
   }
+
+  async deleteOrganization(id: string): Promise<Organization> {
+    const organization = await this.organizationModel.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!organization) {
+      throw new NotFoundException('invalid organization id');
+    }
+    return organization;
+  }
 }

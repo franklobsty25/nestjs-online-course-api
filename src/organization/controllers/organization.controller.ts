@@ -38,4 +38,23 @@ export class OrganizationController {
       this.responseService.json(res, error);
     }
   }
+
+  async deleteOrganization(
+    @Res() res: Response,
+    @Param() { id }: { id: string },
+  ) {
+    try {
+      const organization = await this.organizationService.deleteOrganization(
+        id,
+      );
+      this.responseService.json(
+        res,
+        200,
+        'organization deleted successfully',
+        organization,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
 }
