@@ -19,11 +19,9 @@ export class OrganizationService {
 
   async getOrganization(id: string): Promise<Organization> {
     const organization = await this.organizationModel.findOne({ _id: id });
-
     if (!organization) {
       throw new NotFoundException('invalid organization id');
     }
-
     return organization;
   }
 }
