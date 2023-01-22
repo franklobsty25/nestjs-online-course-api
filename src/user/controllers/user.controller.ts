@@ -247,7 +247,6 @@ export class UserController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
   @UseGuards(UserAdminAccessGuard)
   @UseGuards(JwtAuthAccessGuard)
   @Patch('/status')
