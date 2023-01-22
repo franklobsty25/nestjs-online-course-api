@@ -16,7 +16,6 @@ export class UserAdminAccessGuard implements CanActivate {
 
     const { user } = request;
     const { role } = user;
-    console.log(user);
 
     const userRole = await this.roleService.findOneById(role);
 
