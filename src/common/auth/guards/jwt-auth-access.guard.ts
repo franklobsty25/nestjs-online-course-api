@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { STATUS_CODE_RESPONSE } from "src/common/constants/status.contant";
 
 @Injectable()
 export class JwtAuthAccessGuard extends AuthGuard('jwt') {
@@ -7,7 +8,7 @@ export class JwtAuthAccessGuard extends AuthGuard('jwt') {
         if (err || !user) {
             throw new UnauthorizedException({
                 statusCode:
-                    401,
+                STATUS_CODE_RESPONSE,
                 message: 'Unauthorized token',
                 error: err ? err.message : info.message,
             });
