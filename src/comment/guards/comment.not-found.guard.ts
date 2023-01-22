@@ -1,14 +1,18 @@
-import { CanActivate, ExecutionContext, Injectable, NotFoundException } from "@nestjs/common";
-import { Observable } from "rxjs";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 @Injectable()
-export class CommentNotFound implements CanActivate {
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const { __comment } = request;
+export class CommentNotFoundGuard implements CanActivate {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const { __comment } = request;
 
-        if (!__comment) throw new NotFoundException(`Comment not found`);
+    if (!__comment) throw new NotFoundException(`Comment not found`);
 
-        return true;
-    }
+    return true;
+  }
 }

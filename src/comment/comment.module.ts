@@ -6,6 +6,7 @@ import { CommentSchema } from './schemas/comment.schema';
 import { COMMENT } from 'src/common/constants/schema.constant';
 import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { ResponseService } from 'src/common/response/response.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ResponseService } from 'src/common/response/response.service';
         schema: CommentSchema,
       },
     ], DB_CONNECTION),
+    UserModule,
   ],
   providers: [CommentService, ResponseService],
   controllers: [CommentController],

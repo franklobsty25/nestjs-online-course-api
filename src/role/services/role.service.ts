@@ -89,21 +89,21 @@ export class RoleService {
     console.log('Admin role');
   }
 
-  async createDefaultRoles(): Promise<Role> {
+  async createDefaultRoles(): Promise<any> {
     try {
-      const adminRole = await this.create({
+      const superAdminRole: Role = await this.create({
         name: ROLE_ENUM.Super_Admin,
       });
 
-      await this.create({
+      const adminRole: Role = await this.create({
         name: ROLE_ENUM.Admin,
       });
 
-      await this.create({
+      const userRole: Role = await this.create({
         name: ROLE_ENUM.User,
       });
 
-      return adminRole;
+      return { superAdminRole, adminRole, userRole };
     } catch (error) {
       throw new Error(error);
     }

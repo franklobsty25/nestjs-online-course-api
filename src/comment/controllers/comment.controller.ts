@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ResponseService } from 'src/common/response/response.service';
 import { GetUser } from 'src/user/decorators/user.decorator';
@@ -72,6 +73,7 @@ export class CommentController {
   }
 
   @CommentFromParamGuard()
+  @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findComment(
@@ -87,6 +89,7 @@ export class CommentController {
   }
 
   @CommentFromParamGuard()
+  @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
   @Put(':id/update')
   async updateComment(
@@ -113,6 +116,7 @@ export class CommentController {
   }
 
   @CommentFromParamGuard()
+  @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
   @Delete(':id/delete')
   async deleteComment(

@@ -13,8 +13,6 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ResponseService } from 'src/common/response/response.service';
-import { GetUser } from 'src/user/decorators/user.decorator';
-import { User } from 'src/user/schemas/user.schema';
 import { GetRole } from '../decorators/role.decorator';
 import { RoleParamGuard } from '../decorators/role.param.decorator.';
 import { RoleCreateDTO } from '../dto/role.create.dto';
@@ -35,9 +33,9 @@ export class RoleController {
     @Res() res: Response,
   ): Promise<void> {
     try {
-      const adminRole: Role = await this.roleService.createDefaultRoles();
+      const createdRoles: any = await this.roleService.createDefaultRoles();
 
-      this.responseService.json(res, 200, 'Dummy data created', adminRole);
+      this.responseService.json(res, 200, 'Dummy data created', createdRoles);
     } catch (error) {
       this.responseService.json(res, error);
     }
@@ -148,5 +146,4 @@ export class RoleController {
       this.responseService.json(res, error);
     }
   }
-
 }
