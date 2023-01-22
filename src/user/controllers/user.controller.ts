@@ -13,19 +13,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
-import { UserAdminGuard } from '../decorators/user.admin.decorator';
 import { GetUser } from '../decorators/user.decorator';
 import { UserParam, UserParamGuard } from '../decorators/user.param.decorator';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { UserCreateDTO } from '../dto/user.create.dto';
 import { UserRoleDTO } from '../dto/user.role.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
+import { UserAdminAccessGuard } from '../guards/user.admin-access.guard';
 import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 
@@ -246,9 +247,10 @@ export class UserController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UserAdminGuard()
-  @Patch(':id/status')
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(UserAdminAccessGuard)
+  @UseGuards(JwtAuthAccessGuard)
+  @Patch('/status')
   async courseStatus(): Promise<void> {
     this.logger.log('Approved course status');
   }
