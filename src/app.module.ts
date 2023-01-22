@@ -12,6 +12,7 @@ import { RoleModule } from './role/role.module';
 import { MigrationModule } from './common/migration/migration.module';
 import { DB_CONNECTION } from './common/constants/database.constant';
 import { NotificationModule } from './common/notification/notification.module';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { NotificationModule } from './common/notification/notification.module';
     RoleModule,
     MigrationModule,
     NotificationModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],
