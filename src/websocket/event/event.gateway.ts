@@ -6,7 +6,11 @@ import {
   WsResponse,
   ConnectedSocket,
 } from '@nestjs/websockets';
+import { Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
+import { MessageCreateDTO } from '../dto/message.dto';
+import { Message } from '../schemas/message.schema';
+import { WebsocketService } from '../services/websocket.service';
 
 @WebSocketGateway({
   cors: {
@@ -17,12 +21,17 @@ export class EventGateway {
   @WebSocketServer()
   server: Server;
 
+  constructor(private readonly websocketService: WebsocketService) {}
+
   @SubscribeMessage('createMessage')
-  handleMessage(
+  async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: any,
-  ): any {
-    console.log(payload);
-    client.emit('responseMessage', payload, (payload) => console.log(payload));
+    @MessageBody() payload: MessageCreateDTO,
+  ): Promise<Message> {
+    const message: Message = await this.websocketService.createMessage(payload);
+
+    client.emit('responseMessage', payload);
+
+    return message;
   }
 }
