@@ -3,12 +3,12 @@ import { UpdateCourseDto } from './../dto/update-course.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { COURSE } from 'src/common/constants/schema';
 import { S3Service } from 'src/common/s3/s3.service';
 import { Course, CourseDocument } from '../schemas/course.schema';
 import { InjectPaystack } from 'nestjs-paystack';
 import paystack from 'paystack';
 import { COURSESTATUS } from '../types';
+import { COURSE } from 'src/common/constants/schema.constant';
 
 @Injectable()
 export class CourseService {
