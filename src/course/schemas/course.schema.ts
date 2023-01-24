@@ -3,6 +3,7 @@ import { HydratedDocument, SchemaTypes } from 'mongoose';
 import { USER } from 'src/common/constants/schema.constant';
 import { UserDocument } from 'src/user/schemas/user.schema';
 import { COURSESTATUS } from '../types';
+import * as mongoose from 'mongoose';
 
 export type CourseDocument = HydratedDocument<Course>;
 
@@ -53,7 +54,7 @@ export class Course {
   status: COURSESTATUS;
 
   @Prop({
-    type: SchemaTypes.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: USER,
   })

@@ -3,10 +3,8 @@ import {
   WebSocketGateway,
   MessageBody,
   WebSocketServer,
-  WsResponse,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { MessageCreateDTO } from '../dto/message.dto';
 import { Message } from '../schemas/message.schema';

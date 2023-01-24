@@ -7,7 +7,6 @@ import {
 
 @Injectable()
 export class CommentPermissionAccessGuard implements CanActivate {
-
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const { __comment, user } = request;

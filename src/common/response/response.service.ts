@@ -4,16 +4,16 @@ import { Response } from 'express';
 import { get, isNil, isEmpty } from 'lodash';
 
 export class ResponseObject<T> {
-  @ApiProperty({description: 'Error code'})
+  @ApiProperty({ description: 'Error code' })
   code?: string;
 
-  @ApiProperty({description: 'Response message'})
+  @ApiProperty({ description: 'Response message' })
   message?: string;
 
-  @ApiProperty({description: 'Response data'})
+  @ApiProperty({ description: 'Response data' })
   data?: T;
 
-  @ApiProperty({description: 'Response meta'})
+  @ApiProperty({ description: 'Response meta' })
   meta?: any;
 }
 

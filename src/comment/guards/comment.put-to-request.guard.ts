@@ -1,19 +1,21 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { CommentDocument } from "../schemas/comment.schema";
-import { CommentService } from "../services/comment.service";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CommentDocument } from '../schemas/comment.schema';
+import { CommentService } from '../services/comment.service';
 
 @Injectable()
 export class CommentPutToRequestGuard implements CanActivate {
-    constructor(private readonly commentService: CommentService) {}
-    
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const { params } = request;
+  constructor(private readonly commentService: CommentService) {}
 
-        const check: CommentDocument = await this.commentService.findOneById(params.id);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const { params } = request;
 
-        request.__comment = check;
+    const check: CommentDocument = await this.commentService.findOneById(
+      params.id,
+    );
 
-        return true;
-    }
+    request.__comment = check;
+
+    return true;
+  }
 }

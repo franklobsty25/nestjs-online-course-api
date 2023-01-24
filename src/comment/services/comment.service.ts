@@ -21,7 +21,7 @@ export class CommentService {
   ): Promise<CommentDocument> {
     const comment: CommentDocument = await this.commentModel.create({
       ...commentDTO,
-      creator: user,
+      creator: user, //@TODO user to be replaced by organization
     });
 
     return comment;
