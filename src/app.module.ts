@@ -14,6 +14,7 @@ import { DB_CONNECTION } from './common/constants/database.constant';
 import { NotificationModule } from './common/notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     NotificationModule,
     CommentModule,
     WebsocketModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],
