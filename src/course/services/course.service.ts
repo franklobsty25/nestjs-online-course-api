@@ -9,6 +9,7 @@ import { InjectPaystack } from 'nestjs-paystack';
 import paystack from 'paystack';
 import { COURSESTATUS } from '../types';
 import { COURSE } from 'src/common/constants/schema.constant';
+import { User } from 'src/user/schemas/user.schema';
 
 @Injectable()
 export class CourseService {
@@ -18,13 +19,14 @@ export class CourseService {
     @InjectPaystack() private readonly paystackClient,
   ) {}
 
-  async createCourse(body: any, file: Express.Multer.File): Promise<any> {
+  async createCourse(body: any, user: User, file: Express.Multer.File): Promise<any> {
     const bucketKey = `${file.fieldname}${Date.now()}`;
     const resourceUrl = await this.s3Service.uploadFile(file, bucketKey);
 
     const newCourse = await this.courseModel.create({
       ...body,
       resourceUrl,
+      author: user,
     });
 
     return newCourse;

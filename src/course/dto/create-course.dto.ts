@@ -43,8 +43,4 @@ export class CreateCourseDto {
   @IsOptional()
   resourceUrl: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsMongoId()
-  author: string
 }
