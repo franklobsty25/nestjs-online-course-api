@@ -42,7 +42,7 @@ export class UserController {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Get('default')
+  @Post('default')
   async creatDefaultAdmin(
     @Req() req: Request,
     @Res() res: Response,
