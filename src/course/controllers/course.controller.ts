@@ -53,7 +53,7 @@ export class CourseController {
   @Post('buy')
   async buyCourse(@Res() res: Response) {
     try {
-      this.courseService.buyCourse('courseid', 'organization id');
+      this.courseService.buyCourse();
     } catch (error) {
       this.responseService.json(res, error);
     }

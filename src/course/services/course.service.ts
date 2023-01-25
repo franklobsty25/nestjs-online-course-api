@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateCourseDto } from './../dto/update-course.dto';
 import { Injectable } from '@nestjs/common';
@@ -6,16 +7,14 @@ import { Model } from 'mongoose';
 import { COURSE } from 'src/common/constants/schema';
 import { S3Service } from 'src/common/s3/s3.service';
 import { Course, CourseDocument } from '../schemas/course.schema';
-import { InjectPaystack } from 'nestjs-paystack';
-import paystack from 'paystack';
 import { COURSESTATUS } from '../types';
-
+import fetch from 'node-fetch';
 @Injectable()
 export class CourseService {
   constructor(
     @InjectModel(COURSE) private courseModel: Model<CourseDocument>,
     private s3Service: S3Service,
-    @InjectPaystack() private readonly paystackClient,
+    private configService: ConfigService,
   ) {}
 
   async createCourse(body: any, file: Express.Multer.File): Promise<any> {
@@ -45,7 +44,27 @@ export class CourseService {
     return course;
   }
 
-  async buyCourse(courseId: string, organizationId: string) {}
+  async buyCourse(): Promise<any> {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.configService.get(
+          'PAYSTACK_PUBLIC_KEY',
+        )}`,
+      },
+      body: JSON.stringify({
+        email: 'ybenson96@gmail.com',
+        amount: '20000',
+      }),
+    };
+
+    fetch('https://api.paystack.co/transaction/initialize', requestOptions)
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response);
+      });
+  }
 
   async deleteCourse(id: string): Promise<Course> {
     const course = await this.courseModel.findOneAndDelete({ _id: id });
