@@ -11,6 +11,7 @@ import fetch from 'node-fetch';
 
 import { COURSE } from 'src/common/constants/schema.constant';
 import { User } from 'src/user/schemas/user.schema';
+import { BuyCourseDto } from '../dto/buy-course.dto';
 
 @Injectable()
 export class CourseService {
@@ -52,8 +53,8 @@ export class CourseService {
     return course;
   }
 
-  async buyCourse(): Promise<any> {
-    const requestOptions = {
+  async buy(data: BuyCourseDto): Promise<any> {
+    const initializeOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -62,15 +63,35 @@ export class CourseService {
         )}`,
       },
       body: JSON.stringify({
-        email: 'ybenson96@gmail.com',
-        amount: '20000',
+        email: data?.email,
+        amount: data?.amount * 100,
       }),
     };
 
-    fetch('https://api.paystack.co/transaction/initialize', requestOptions)
+    const verifyOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.configService.get(
+          'PAYSTACK_PUBLIC_KEY',
+        )}`,
+      },
+    };
+
+    fetch(
+      this.configService.get('PAYSTACK_INITIALIZE_ENDPOINT'),
+      initializeOptions,
+    )
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
+        fetch(
+          `https://api.paystack.co/transaction/verify/${response?.data.reference}`,
+          verifyOptions,
+        )
+          .then((res) => res.json())
+          .then((response) => {
+            console.log(response);
+          });
       });
   }
 
