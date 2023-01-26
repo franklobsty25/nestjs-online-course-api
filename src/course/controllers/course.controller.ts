@@ -65,6 +65,15 @@ export class CourseController {
     }
   }
 
+  @Post('pay')
+  async makePayment(@Res() res: Response, @Body() data: BuyCourseDto) {
+    try {
+      this.courseService.buy(data);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('list')
   async getCourses(@Res() res: Response): Promise<any> {
