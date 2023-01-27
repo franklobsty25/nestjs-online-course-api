@@ -147,7 +147,7 @@ export class UserService {
       { new: true },
     );
 
-    if (!user) throw new NotFoundException(`User with ${email} not found`);
+    if (!user) throw new NotFoundException(`User with ${ email } not found`);
 
     return user;
   }
@@ -199,7 +199,7 @@ export class UserService {
   async changeRole(email: string, roleName: string): Promise<User> {
     const role: Role = await this.roleService.findOneByName(roleName);
 
-    if (!role) throw new NotFoundException(`${roleName} role not found`);
+    if (!role) throw new NotFoundException(`${ roleName } role not found`);
 
     const user: User = await this.userModel.findOneAndUpdate(
       { email },
@@ -207,7 +207,7 @@ export class UserService {
       { new: true },
     );
 
-    if (!user) throw new NotFoundException(`User with ${email} not found`);
+    if (!user) throw new NotFoundException(`User with ${ email } not found`);
 
     return user;
   }
