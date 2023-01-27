@@ -23,6 +23,7 @@ import { COURSESTATUS } from '../types';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { User } from 'src/user/schemas/user.schema';
+import { BuyCourseDto } from '../dto/buy-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -56,9 +57,18 @@ export class CourseController {
   }
 
   @Post('buy')
-  async buyCourse(@Res() res: Response) {
+  async buy(@Res() res: Response, @Body() data: BuyCourseDto) {
     try {
-      this.courseService.buyCourse('courseid', 'organization id');
+      this.courseService.buy(data);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @Post('pay')
+  async makePayment(@Res() res: Response, @Body() data: BuyCourseDto) {
+    try {
+      this.courseService.buy(data);
     } catch (error) {
       this.responseService.json(res, error);
     }
@@ -143,7 +153,7 @@ export class CourseController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Put('/:id/update-status')
   async updateCourseStatus(
     @Res() res: Response,
