@@ -16,17 +16,12 @@ export class UserAdminAccessGuard implements CanActivate {
 
     const { user } = request;
     const { role } = user;
-    console.log(user);
 
     const userRole = await this.roleService.findOneById(role);
 
     if (!userRole) throw new ForbiddenException();
 
-    if (
-      userRole.accessFor === ROLE_ENUM_ACCESS_FOR.Admin ||
-      userRole.accessFor === ROLE_ENUM_ACCESS_FOR.Super_Admin
-    )
-      return true;
+    if (userRole.accessFor === ROLE_ENUM_ACCESS_FOR.Admin) return true;
 
     return false;
   }

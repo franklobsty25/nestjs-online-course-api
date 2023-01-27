@@ -8,7 +8,12 @@ import { ResponseService } from 'src/common/response/response.service';
 import { DB_CONNECTION } from 'src/common/constants/database.constant';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: ROLE, schema: RoleSchema }], DB_CONNECTION)],
+  imports: [
+    MongooseModule.forFeature(
+      [{ name: ROLE, schema: RoleSchema }],
+      DB_CONNECTION,
+    ),
+  ],
   providers: [RoleService, ResponseService],
   controllers: [RoleController],
   exports: [RoleService],

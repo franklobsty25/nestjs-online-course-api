@@ -29,7 +29,7 @@ export class User {
     trim: true,
     type: String,
   })
-  organization: string;
+  institution: string;
 
   @Prop({
     required: true,
@@ -83,7 +83,6 @@ export class User {
     ref: ROLE,
   })
   role: Role;
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

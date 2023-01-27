@@ -6,7 +6,7 @@ import { RoleSeed } from './migrate.role.seed';
 import { UserSeed } from './migrate.user.seed';
 
 @Module({
-    imports: [CommandModule, RoleModule, UserModule],
-    providers: [RoleSeed, UserSeed],
+  imports: [CommandModule, RoleModule, UserModule],
+  providers: [RoleSeed, UserSeed],
 })
 export class MigrationModule {}

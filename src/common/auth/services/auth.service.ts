@@ -38,12 +38,15 @@ export class AuthService {
 
     const user: User = await this.userService.findByEmail(email);
 
-    if (!user) throw new NotFoundException(`User with ${ email } not found`);
+    if (!user) throw new NotFoundException(`User with ${email} not found`);
 
-    const validPassword: boolean = await hasVerifyPassword(password, user.password);
+    const validPassword: boolean = await hasVerifyPassword(
+      password,
+      user.password,
+    );
 
     if (!validPassword)
-      throw new UnauthorizedException(`User with ${ email } password incorrect`);
+      throw new UnauthorizedException(`User with ${email} password incorrect`);
 
     return user;
   }

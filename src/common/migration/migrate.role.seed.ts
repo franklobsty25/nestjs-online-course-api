@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Command } from 'nestjs-command';
 import { RoleService } from 'src/role/services/role.service';
-import {
-  ROLE_ENUM,
-  ROLE_ENUM_ACCESS_FOR,
-} from '../constants/role.enum.constant';
+import { ROLE_ENUM } from '../constants/role.enum.constant';
 
 @Injectable()
 export class RoleSeed {
@@ -16,10 +13,6 @@ export class RoleSeed {
   })
   async seeds(): Promise<void> {
     try {
-      await this.roleService.create({
-        name: ROLE_ENUM.Super_Admin,
-      });
-
       await this.roleService.create({
         name: ROLE_ENUM.Admin,
       });

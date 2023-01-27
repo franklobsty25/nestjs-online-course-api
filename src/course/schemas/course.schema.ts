@@ -1,6 +1,6 @@
 import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import { HydratedDocument, SchemaTypes } from 'mongoose';
-import { USER } from 'src/common/constants/schema';
+import { USER } from 'src/common/constants/schema.constant';
 import { UserDocument } from 'src/user/schemas/user.schema';
 import { COURSESTATUS } from '../types';
 
