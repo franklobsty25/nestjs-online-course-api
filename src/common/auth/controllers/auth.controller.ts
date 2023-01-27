@@ -24,7 +24,7 @@ export class AuthController {
       const token = await this.authService.signAuthPayload(user);
 
       this.responseService.json(res, 200, 'User login successfully', {
-        ...user,
+        user,
         token,
       });
     } catch (error) {

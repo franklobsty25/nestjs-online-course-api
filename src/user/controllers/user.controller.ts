@@ -13,19 +13,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
-import { UserAdminGuard } from '../decorators/user.admin.decorator';
 import { GetUser } from '../decorators/user.decorator';
 import { UserParam, UserParamGuard } from '../decorators/user.param.decorator';
 import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { UserCreateDTO } from '../dto/user.create.dto';
 import { UserRoleDTO } from '../dto/user.role.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
+import { UserAdminAccessGuard } from '../guards/user.admin-access.guard';
+import { IUser } from '../interface/user.interface';
 import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 
@@ -40,7 +42,7 @@ export class UserController {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Get('default')
+  @Post('default')
   async creatDefaultAdmin(
     @Req() req: Request,
     @Res() res: Response,
@@ -69,9 +71,9 @@ export class UserController {
     @Body() input: UserCreateDTO,
   ): Promise<void> {
     try {
-      const user: User = await this.userService.create(input);
+      const user: IUser = await this.userService.create(input);
 
-      const message: string = `
+      const message = `
         Please click on the link ${req.protocol}://${req.get(
         'Host',
       )}/v1/users/verify?email=${user.email} \n
@@ -101,7 +103,7 @@ export class UserController {
   @Get('list')
   async fetchUsers(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
-      const users = await this.userService.findAllUsers();
+      const users: User[] = await this.userService.findAllUsers();
 
       this.responseService.json(res, 200, 'Users found successfully', users);
     } catch (error) {
@@ -128,7 +130,7 @@ export class UserController {
     @Body() input: UserChangePasswordDTO,
   ): Promise<void> {
     try {
-      const userPasswordUpdated = await this.userService.changePassword(
+      const userPasswordUpdated: User = await this.userService.changePassword(
         user,
         input,
       );
@@ -228,7 +230,7 @@ export class UserController {
     @Req() req: Request,
     @Res() res,
     @Body() input: UserRoleDTO,
-  ) {
+  ): Promise<void> {
     try {
       const user: User = await this.userService.changeRole(
         input.email,
@@ -246,10 +248,10 @@ export class UserController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UserAdminGuard()
-  @Patch(':id/status')
-  async courseStatus() {
+  @UseGuards(UserAdminAccessGuard)
+  @UseGuards(JwtAuthAccessGuard)
+  @Patch('/status')
+  async courseStatus(): Promise<void> {
     this.logger.log('Approved course status');
   }
 
@@ -258,16 +260,11 @@ export class UserController {
     @Req() req: Request,
     @Res() res: Response,
     @Query('email') email: string,
-  ) {
+  ): Promise<void> {
     try {
       const user: User = await this.userService.verifyEmail(email);
 
-      this.responseService.json(
-        res,
-        200,
-        'Email verified successfully',
-        user,
-      );
+      this.responseService.json(res, 200, 'Email verified successfully', user);
     } catch (error) {
       this.responseService.json(res, error);
     }

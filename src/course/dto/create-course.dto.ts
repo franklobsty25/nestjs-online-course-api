@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { COURSESTATUS } from '../types';
 
 export class CreateCourseDto {
@@ -34,22 +40,4 @@ export class CreateCourseDto {
   @IsString()
   @IsNotEmpty()
   category: string;
-
-  @ApiProperty({
-    description: 'resource',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  resourceUrl?: string;
-
-  @ApiProperty({
-    description: 'status',
-    required: true,
-    default: COURSESTATUS.Pending,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  status: COURSESTATUS;
 }

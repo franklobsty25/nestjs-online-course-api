@@ -4,20 +4,18 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import {
-  ROLE_ENUM_ACCESS_FOR,
-} from 'src/common/constants/role.enum.constant';
+import { ROLE_ENUM_ACCESS_FOR } from 'src/common/constants/role.enum.constant';
 import { RoleService } from 'src/role/services/role.service';
 
 @Injectable()
-export class UserPayloadGuard implements CanActivate {
+export class UserAdminAccessGuard implements CanActivate {
   constructor(private readonly roleService: RoleService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { __user } = request;
 
-    const { role } = __user;
+    const { user } = request;
+    const { role } = user;
 
     const userRole = await this.roleService.findOneById(role);
 
