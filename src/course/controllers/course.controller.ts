@@ -153,7 +153,7 @@ export class CourseController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Put('/:id/update-status')
   async updateCourseStatus(
     @Res() res: Response,

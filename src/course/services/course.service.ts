@@ -120,18 +120,22 @@ export class CourseService {
     return course;
   }
 
-  async updateCourseStatus(id: string, status: COURSESTATUS): Promise<Course> {
+  async updateCourseStatus(id: string, status: COURSESTATUS): Promise<any> {
     const filter = { _id: id };
     const update = { status };
 
-    const course = await this.courseModel.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+    if (['approved', 'pending', 'rejected'].includes(status)) {
+      const course = await this.courseModel.findOneAndUpdate(filter, update, {
+        new: true,
+      });
 
-    if (!course) {
-      throw new NotFoundException('invalid course id');
+      if (!course) {
+        throw new NotFoundException('invalid course id');
+      }
+
+      return course;
     }
 
-    return course;
+    throw new NotFoundException('invalid status');
   }
 }
