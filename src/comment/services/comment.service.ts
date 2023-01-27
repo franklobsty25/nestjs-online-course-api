@@ -11,7 +11,7 @@ import { CommentDocument } from '../schemas/comment.schema';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(COMMENT, DB_CONNECTION)
+    @InjectModel(COMMENT)
     private readonly commentModel: Model<CommentDocument>,
   ) {}
 

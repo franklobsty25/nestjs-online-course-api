@@ -18,12 +18,11 @@ import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
-import { DB_CONNECTION } from 'src/common/constants/database.constant';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(USER, DB_CONNECTION) private userModel: Model<UserDocument>,
+    @InjectModel(USER) private userModel: Model<UserDocument>,
     private readonly roleService: RoleService,
   ) {}
 
@@ -92,6 +91,12 @@ export class UserService {
     const user: User = await this.userModel.findById(id).select('+password');
 
     return user;
+  }
+
+  async getTotalUsers(): Promise<number> {
+    const total: number = await this.userModel.find({}).count();
+
+    return total;
   }
 
   async changePassword(

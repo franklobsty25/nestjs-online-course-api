@@ -17,10 +17,6 @@ export class RoleSeed {
   async seeds(): Promise<void> {
     try {
       await this.roleService.create({
-        name: ROLE_ENUM.Super_Admin,
-      });
-
-      await this.roleService.create({
         name: ROLE_ENUM.Admin,
       });
 

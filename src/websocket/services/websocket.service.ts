@@ -9,7 +9,7 @@ import { Message, MessageDocument } from '../schemas/message.schema';
 @Injectable()
 export class WebsocketService {
   constructor(
-    @InjectModel(MESSAGE, DB_CONNECTION)
+    @InjectModel(MESSAGE)
     private readonly messageModel: Model<MessageDocument>,
   ) {}
 

@@ -8,14 +8,15 @@ import { UserService } from './services/user.service';
 import { RoleModule } from 'src/role/role.module';
 import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     MongooseModule.forFeature(
-      [{ name: USER, schema: UserSchema }],
-      DB_CONNECTION,
+      [{ name: USER, schema: UserSchema }]
     ),
     RoleModule,
+    ConfigModule,
   ],
   controllers: [UserController],
   providers: [UserService, ResponseService, NotificationService],
