@@ -39,7 +39,8 @@ export class CourseService {
   }
 
   async getAllCourses(): Promise<Course[]> {
-    const courses = await this.courseModel.find({}).populate('author');
+    // const courses = await this.courseModel.find({}).populate('author');
+    const courses = await this.courseModel.find({});
     return courses;
   }
 
