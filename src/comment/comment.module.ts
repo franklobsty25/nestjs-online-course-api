@@ -9,12 +9,14 @@ import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: COMMENT,
-        schema: CommentSchema,
-      },
-    ]),
+    MongooseModule.forFeature(
+      [
+        {
+          name: COMMENT,
+          schema: CommentSchema,
+        },
+      ],
+    ),
     UserModule,
   ],
   providers: [CommentService, ResponseService],

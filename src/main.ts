@@ -9,11 +9,11 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
   const options = new DocumentBuilder()
-  .setTitle('Online Course System API')
-  .setDescription('API endpoints for Online Course Management System')
-  .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT'})
-  .setVersion('1.0')
-  .build();
+    .setTitle('Online Course System API')
+    .setDescription('API endpoints for Online Course Management System')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
+    .setVersion('1.0')
+    .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 

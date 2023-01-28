@@ -31,16 +31,16 @@ export class UserCreateDTO {
   readonly lastName: string;
 
   @ApiProperty({
-    description: 'Organization name',
+    description: 'Institution user belongs to',
     required: false,
   })
   @IsString()
   @IsOptional()
   @MaxLength(100)
-  readonly organization?: string;
+  readonly institution?: string;
 
   @ApiProperty({
-    description: 'Organization or personal contact',
+    description: 'institution or personal contact',
     required: true,
   })
   @IsString()
@@ -50,7 +50,7 @@ export class UserCreateDTO {
   readonly phoneNumber: string;
 
   @ApiProperty({
-    description: 'Organization email',
+    description: 'email',
     required: true,
   })
   @IsEmail()
@@ -58,7 +58,7 @@ export class UserCreateDTO {
   readonly email: string;
 
   @ApiProperty({
-    description: 'String password',
+    description: 'Strong password',
     required: true,
   })
   @IsString()
@@ -66,7 +66,7 @@ export class UserCreateDTO {
   @IsStrongPassword({
     minLength: 8,
     minSymbols: 1,
-    minUppercase: 1
+    minUppercase: 1,
   })
   readonly password: string;
 }

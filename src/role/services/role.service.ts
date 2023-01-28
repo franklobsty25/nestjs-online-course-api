@@ -90,10 +90,6 @@ export class RoleService {
 
   async createDefaultRoles(): Promise<any> {
     try {
-      const superAdminRole: Role = await this.create({
-        name: ROLE_ENUM.Super_Admin,
-      });
-
       const adminRole: Role = await this.create({
         name: ROLE_ENUM.Admin,
       });
@@ -102,7 +98,7 @@ export class RoleService {
         name: ROLE_ENUM.User,
       });
 
-      return { superAdminRole, adminRole, userRole };
+      return { adminRole, userRole };
     } catch (error) {
       throw new Error(error);
     }

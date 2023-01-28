@@ -27,6 +27,7 @@ import { UserCreateDTO } from '../dto/user.create.dto';
 import { UserRoleDTO } from '../dto/user.role.dto';
 import { UserUpdateDTO } from '../dto/user.update.dto';
 import { UserAdminAccessGuard } from '../guards/user.admin-access.guard';
+import { IUser } from '../interface/user.interface';
 import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 
@@ -41,7 +42,7 @@ export class UserController {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Get('default')
+  @Post('default')
   async creatDefaultAdmin(
     @Req() req: Request,
     @Res() res: Response,
@@ -70,9 +71,9 @@ export class UserController {
     @Body() input: UserCreateDTO,
   ): Promise<void> {
     try {
-      const user: User = await this.userService.create(input);
+      const user: IUser = await this.userService.create(input);
 
-      const message: string = `
+      const message = `
         Please click on the link ${req.protocol}://${req.get(
         'Host',
       )}/v1/users/verify?email=${user.email} \n
@@ -263,12 +264,7 @@ export class UserController {
     try {
       const user: User = await this.userService.verifyEmail(email);
 
-      this.responseService.json(
-        res,
-        200,
-        'Email verified successfully',
-        user,
-      );
+      this.responseService.json(res, 200, 'Email verified successfully', user);
     } catch (error) {
       this.responseService.json(res, error);
     }

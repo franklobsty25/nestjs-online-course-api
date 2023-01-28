@@ -14,6 +14,7 @@ import { NotificationModule } from './common/notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { WebsocketModule } from './websocket/websocket.module';
 import { PaginationModule } from './common/pagination/pagination.module';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PaginationModule } from './common/pagination/pagination.module';
     CommentModule,
     WebsocketModule,
     PaginationModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ResponseService],

@@ -18,6 +18,7 @@ import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
+import { IUser } from '../interface/user.interface';
 
 @Injectable()
 export class UserService {
@@ -26,8 +27,8 @@ export class UserService {
     private readonly roleService: RoleService,
   ) {}
 
-  async create(createUserDTO: UserCreateDTO): Promise<User> {
-    const { firstName, lastName, organization, phoneNumber, email, password } =
+  async create(createUserDTO: UserCreateDTO): Promise<IUser> {
+    const { firstName, lastName, institution, phoneNumber, email, password } =
       createUserDTO;
 
     const hashed: string = await hashPassword(password);
@@ -36,25 +37,23 @@ export class UserService {
 
     if (!role) throw new BadRequestException('Roles does not exist');
 
-    let user: User;
-
     try {
-      user = await this.userModel.create({
+      const user: IUser = await this.userModel.create({
         firstName,
         lastName,
-        organization,
+        institution,
         phoneNumber,
         email,
         password: hashed,
         role,
       });
+
+      if (!user) throw new BadRequestException(`User failed to be created`);
+
+      return user;
     } catch (error) {
-      throw new Error('Email already exist');
+      throw new Error('Email already exists');
     }
-
-    if (!user) throw new BadRequestException(`User failed to be created`);
-
-    return user;
   }
 
   async createAdmin(role: Role): Promise<User> {
@@ -74,7 +73,7 @@ export class UserService {
   }
 
   async findAllUsers(): Promise<User[]> {
-    const users: User[] = await this.userModel.find({});
+    const users: User[] = await this.userModel.find({}).populate('role');
 
     return users;
   }

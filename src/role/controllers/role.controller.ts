@@ -35,7 +35,12 @@ export class RoleController {
     try {
       const createdRoles: any = await this.roleService.createDefaultRoles();
 
-      this.responseService.json(res, 200, 'Dummy data created', createdRoles);
+      this.responseService.json(
+        res,
+        200,
+        'Roles data created successfully',
+        createdRoles,
+      );
     } catch (error) {
       this.responseService.json(res, error);
     }
