@@ -23,10 +23,20 @@ export class RoleService {
     return role;
   }
 
-  async findAll(): Promise<Role[]> {
-    const roles: Role[] = await this.roleModel.find({});
+  async findAll(limit: number, skip: number): Promise<Role[]> {
+    const roles: Role[] = await this.roleModel
+      .find({})
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
 
     return roles;
+  }
+
+  async getTotals(): Promise<number> {
+    const total: number = await this.roleModel.find({}).count();
+
+    return total;
   }
 
   async findOneById(id: string): Promise<Role> {

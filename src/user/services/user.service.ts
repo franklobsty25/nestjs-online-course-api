@@ -72,10 +72,20 @@ export class UserService {
     return user;
   }
 
-  async findAllUsers(): Promise<User[]> {
-    const users: User[] = await this.userModel.find({}).populate('role');
+  async findAllUsers(limit?: number, skip?: number): Promise<User[]> {
+    const users: User[] = await this.userModel
+      .find({})
+      .populate('role')
+      .limit(limit)
+      .skip(skip);
 
     return users;
+  }
+
+  async getTotalUsers(): Promise<number> {
+    const total: number = await this.userModel.find({}).count();
+
+    return total;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -92,10 +102,26 @@ export class UserService {
     return user;
   }
 
-  async getTotalUsers(): Promise<number> {
-    const total: number = await this.userModel.find({}).count();
+  async getTotalUser(search: string): Promise<number> {
+    const total: number = await this.userModel
+      .find(
+        { firstName: search },
+        { lastName: search },
+        { institution: search },
+      )
+      .count();
 
     return total;
+  }
+
+  async find(search: string, limit: number, skip: number): Promise<User[]> {
+    const user: User[] = await this.userModel
+      .find({ firstName: search })
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
+
+    return user;
   }
 
   async changePassword(

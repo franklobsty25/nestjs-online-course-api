@@ -26,6 +26,7 @@ export class ResponseService {
     statusOrError: number | Error,
     message?: string,
     data?: Record<string, any> | Array<Record<string, any>> | T,
+    meta?: any,
     code?: string,
   ): void {
     const error = statusOrError instanceof Error ? statusOrError : null;
@@ -43,6 +44,10 @@ export class ResponseService {
 
     if (!isNil(data)) {
       response.data = data;
+    }
+
+    if (!isNil(meta)) {
+      response.meta = meta;
     }
 
     if (!isEmpty(code)) {

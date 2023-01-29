@@ -7,7 +7,6 @@ import { RoleSeed } from './migrate.role.seed';
 import { UserSeed } from './migrate.user.seed';
 
 @Module({
-<<<<<<< HEAD
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async () => ({
@@ -18,9 +17,6 @@ import { UserSeed } from './migrate.user.seed';
     RoleModule,
     UserModule,
   ],
-=======
-  imports: [CommandModule, RoleModule, UserModule],
->>>>>>> 74b1ed721c7db7facfc476e084ab78e28721606f
   providers: [RoleSeed, UserSeed],
 })
 export class MigrationModule {}

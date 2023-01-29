@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Logger,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -17,6 +18,8 @@ import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
+import { MetaData } from 'src/common/pagination/interface/meta_interface';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
@@ -39,6 +42,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly rolesService: RoleService,
     private readonly responseService: ResponseService,
+    private readonly paginationService: PaginationService,
     private readonly notificationService: NotificationService,
   ) {}
 
@@ -101,11 +105,28 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('list')
-  async fetchUsers(@Req() req: Request, @Res() res: Response): Promise<void> {
+  async fetchUsers(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: { page: number; perPage: number; search: string },
+  ): Promise<void> {
     try {
-      const users: User[] = await this.userService.findAllUsers();
-
-      this.responseService.json(res, 200, 'Users found successfully', users);
+      const { page, perPage } = query;
+      const skip: number = await this.paginationService.skip(page, perPage);
+      const users: User[] = await this.userService.findAllUsers(perPage, skip);
+      const totalData: number = await this.userService.getTotalUsers();
+      const totalPages: number = await this.paginationService.totalPage(
+        totalData,
+        perPage,
+      );
+      const meta: MetaData = { totalData, totalPages, page, perPage };
+      this.responseService.json(
+        res,
+        200,
+        'Users found successfully',
+        users,
+        meta,
+      );
     } catch (error) {
       this.responseService.json(res, error);
     }
@@ -116,6 +137,38 @@ export class UserController {
   userProfile(@GetUser() user: User, @Res() res: Response): void {
     try {
       this.responseService.json(res, 200, 'User profile found', user);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  async search(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: { page: number; perPage: number; search: string },
+  ): Promise<void> {
+    try {
+      const { page, perPage, search } = query;
+      const skip: number = await this.paginationService.skip(page, perPage);
+      const users: User[] = await this.userService.find(search, perPage, skip);
+      const totalData: number = await this.userService.getTotalUser(search);
+      const totalPages: number = await this.paginationService.totalPage(
+        totalData,
+        perPage,
+      );
+      console.log(users);
+
+      const meta: MetaData = { totalData, totalPages, page, perPage };
+
+      this.responseService.json(
+        res,
+        200,
+        'Users found successfully',
+        users,
+        meta,
+      );
     } catch (error) {
       this.responseService.json(res, error);
     }

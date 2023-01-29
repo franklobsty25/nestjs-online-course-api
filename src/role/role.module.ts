@@ -5,19 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ROLE } from 'src/common/constants/schema.constant';
 import { RoleSchema } from './schemas/role.schema';
 import { ResponseService } from 'src/common/response/response.service';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature(
-<<<<<<< HEAD
-      [{ name: ROLE, schema: RoleSchema }]
-=======
-      [{ name: ROLE, schema: RoleSchema }],
-      DB_CONNECTION,
->>>>>>> 74b1ed721c7db7facfc476e084ab78e28721606f
-    ),
-  ],
-  providers: [RoleService, ResponseService],
+  imports: [MongooseModule.forFeature([{ name: ROLE, schema: RoleSchema }])],
+  providers: [RoleService, ResponseService, PaginationService],
   controllers: [RoleController],
   exports: [RoleService],
 })
