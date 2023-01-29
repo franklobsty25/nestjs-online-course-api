@@ -64,13 +64,13 @@ export class Employee {
   // })
   // organization: Organization;
 
-  @Prop({
-    required: true,
-    index: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: COURSE,
-  })
-  course: Course;
+  // @Prop({
+  //   required: true,
+  //   index: true,
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: COURSE,
+  // })
+  // course: Course;
 
 }
 

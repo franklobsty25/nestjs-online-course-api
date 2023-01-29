@@ -46,7 +46,7 @@ export class EmployeeController {
     }
   }
 
-  @Get(':id')
+  @Get('list')
   async findAll(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const employees: EmployeeDocument[] =
@@ -63,7 +63,27 @@ export class EmployeeController {
     }
   }
 
-  @Put(':id')
+  @Get(':id')
+  async findEmployee(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('id') id: string,
+  ): Promise<void> {
+    try {
+      const employee = await this.employeeService.find(id);
+
+      this.responseService.json(
+        res,
+        200,
+        'Employee found successfully',
+        employee,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @Put(':id/update')
   async update(
     @Req() req: Request,
     @Res() res: Response,
@@ -87,7 +107,7 @@ export class EmployeeController {
     }
   }
 
-  @Delete(':id')
+  @Delete(':id/delete')
   async delete(
     @Req() req: Request,
     @Res() res: Response,

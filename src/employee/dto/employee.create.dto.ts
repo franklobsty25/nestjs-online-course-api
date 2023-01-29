@@ -9,7 +9,6 @@ export class CreateEmployeeDTO {
     })
     @IsString()
     @IsNotEmpty()
-    @Min(3)
     readonly firstName: string;
 
     @ApiProperty({
@@ -19,7 +18,6 @@ export class CreateEmployeeDTO {
     })
     @IsString()
     @IsNotEmpty()
-    @Min(3)
     readonly lastName: string;
 
     @ApiProperty({

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EMPLOYEE } from 'src/common/constants/schema.constant';
@@ -29,16 +29,30 @@ export class EmployeeService {
     return employees;
   }
 
+  async find(employeeId: string): Promise<EmployeeDocument> {
+    const employee: EmployeeDocument = await this.employeeModel.findById(
+      employeeId,
+    );
+
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    return employee;
+  }
+
   async updateOne(
     employeeId: string,
     updateemployeDTO: UpdateEmployeeDTO,
   ): Promise<EmployeeDocument> {
     const employeeDoc: EmployeeDocument =
-      await this.employeeModel.findByIdAndUpdate(
-        employeeId,
-        updateemployeDTO,
-        { new: true },
-      );
+      await this.employeeModel.findByIdAndUpdate(employeeId, updateemployeDTO, {
+        new: true,
+      });
+
+    if (!employeeDoc) {
+      throw new NotFoundException('Employee not found');
+    }
 
     return employeeDoc;
   }
@@ -46,6 +60,10 @@ export class EmployeeService {
   async deleteOne(employeeId: string): Promise<EmployeeDocument> {
     const employeeDoc: EmployeeDocument =
       await this.employeeModel.findByIdAndDelete(employeeId);
+
+    if (!employeeDoc) {
+      throw new NotFoundException('Employee not found');
+    }
 
     return employeeDoc;
   }
@@ -58,6 +76,10 @@ export class EmployeeService {
         { new: true },
       );
 
+    if (!employeeDoc) {
+      throw new NotFoundException('Employee not found');
+    }
+
     return employeeDoc;
   }
 
@@ -68,6 +90,10 @@ export class EmployeeService {
         { isActive: false },
         { new: false },
       );
+
+    if (!employeeDoc) {
+      throw new NotFoundException('Employee not found');
+    }
 
     return employeeDoc;
   }
