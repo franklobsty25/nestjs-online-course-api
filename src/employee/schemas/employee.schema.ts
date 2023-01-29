@@ -56,12 +56,13 @@ export class Employee {
   })
   isActive: boolean;
 
-//   @Prop({
-//     required: false,
-//     trim: true,
-//     type: String,
-//   })
-//   organization: string;
+  // @Prop({
+  //   required: false,
+  //   trim: true,
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: ORGANIZATION,
+  // })
+  // organization: Organization;
 
   @Prop({
     required: true,
