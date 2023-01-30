@@ -10,6 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
@@ -23,6 +24,8 @@ import { CommentUpdateDTO } from '../dto/comment.update.dto';
 import { CommentDocument } from '../schemas/comment.schema';
 import { CommentService } from '../services/comment.service';
 
+@ApiTags('Comment')
+@ApiBearerAuth('Bearer Token')
 @Controller('comments')
 export class CommentController {
   constructor(

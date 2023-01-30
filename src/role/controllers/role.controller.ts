@@ -10,6 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { ResponseService } from 'src/common/response/response.service';
@@ -20,6 +21,8 @@ import { RoleUpdateDTO } from '../dto/role.update.dto';
 import { Role } from '../schemas/role.schema';
 import { RoleService } from '../services/role.service';
 
+@ApiTags('Role')
+@ApiBearerAuth('Bearer Token')
 @Controller('roles')
 export class RoleController {
   constructor(

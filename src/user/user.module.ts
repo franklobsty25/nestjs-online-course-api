@@ -8,6 +8,7 @@ import { UserService } from './services/user.service';
 import { RoleModule } from 'src/role/role.module';
 import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
+import { FileHelperService } from 'src/common/helpers/file/file.helper.service';
 
 @Module({
   imports: [
@@ -18,7 +19,12 @@ import { NotificationService } from 'src/common/notification/service/notificatio
     RoleModule,
   ],
   controllers: [UserController],
-  providers: [UserService, ResponseService, NotificationService],
+  providers: [
+    UserService,
+    ResponseService,
+    NotificationService,
+    FileHelperService,
+  ],
   exports: [UserService],
 })
 export class UserModule {}

@@ -10,12 +10,21 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request, Response, Express } from 'express';
 import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
+import { IFile } from 'src/common/constants/file.enum.constant';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
+import { FileHelperService } from 'src/common/helpers/file/file.helper.service';
+import { FileExtractPipe } from 'src/common/helpers/file/pipes/file.extract.pipe';
+import { FileRequiredPipe } from 'src/common/helpers/file/pipes/file.required.pipe';
+import { FileTypeExcelPipe } from 'src/common/helpers/file/pipes/file.type.pipe';
 import { NotificationService } from 'src/common/notification/service/notification.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { Role } from 'src/role/schemas/role.schema';
@@ -31,6 +40,8 @@ import { IUser } from '../interface/user.interface';
 import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 
+@ApiTags('User')
+@ApiBearerAuth('Bearer Token')
 @Controller('users')
 export class UserController {
   private readonly logger = new Logger();
@@ -39,6 +50,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly rolesService: RoleService,
     private readonly responseService: ResponseService,
+    private readonly fileHelperService: FileHelperService,
     private readonly notificationService: NotificationService,
   ) {}
 
@@ -265,6 +277,36 @@ export class UserController {
       const user: User = await this.userService.verifyEmail(email);
 
       this.responseService.json(res, 200, 'Email verified successfully', user);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @UseGuards(UserAdminAccessGuard)
+  @UseGuards(JwtAuthAccessGuard)
+  @Post('import')
+  @UseInterceptors(FileInterceptor('file'))
+  async import(
+    @UploadedFile(FileRequiredPipe, FileTypeExcelPipe, FileExtractPipe)
+    file: IFile,
+  ): Promise<any> {
+    return { file };
+  }
+
+  @UseGuards(UserAdminAccessGuard)
+  @UseGuards(JwtAuthAccessGuard)
+  @Post('export')
+  async export(@Req() req: Request, @Res() res: Response): Promise<void> {
+    try {
+      const users: User[] = await this.userService.findAllUsers();
+
+      const userValues: Record<string, any>[] = users.map((user) => user);
+
+      const workbook = this.fileHelperService.createExcelWorkbook(userValues);
+
+      const result = this.fileHelperService.writeExcelToBuffer(workbook);
+
+      this.responseService.json(res, 200, 'File exported', result);
     } catch (error) {
       this.responseService.json(res, error);
     }

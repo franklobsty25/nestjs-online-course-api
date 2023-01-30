@@ -39,6 +39,7 @@
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/websockets": "^9.2.1",
     "@sendgrid/mail": "^7.7.0",
+    "@types/bytes": "^3.1.1",
     "@types/lodash": "^4.14.191",
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.35",
@@ -60,7 +61,8 @@
     "prettier": "^2.8.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
