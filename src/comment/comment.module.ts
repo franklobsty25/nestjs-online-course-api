@@ -4,24 +4,21 @@ import { CommentController } from './controllers/comment.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentSchema } from './schemas/comment.schema';
 import { COMMENT } from 'src/common/constants/schema.constant';
-import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { ResponseService } from 'src/common/response/response.service';
 import { UserModule } from 'src/user/user.module';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature(
-      [
-        {
-          name: COMMENT,
-          schema: CommentSchema,
-        },
-      ],
-      DB_CONNECTION,
-    ),
+    MongooseModule.forFeature([
+      {
+        name: COMMENT,
+        schema: CommentSchema,
+      },
+    ]),
     UserModule,
   ],
-  providers: [CommentService, ResponseService],
+  providers: [CommentService, ResponseService, PaginationService],
   controllers: [CommentController],
 })
 export class CommentModule {}

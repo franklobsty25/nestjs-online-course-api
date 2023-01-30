@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -13,6 +14,8 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
+import { MetaData } from 'src/common/pagination/interface/meta_interface';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { GetRole } from '../decorators/role.decorator';
 import { RoleParamGuard } from '../decorators/role.param.decorator.';
@@ -28,6 +31,7 @@ export class RoleController {
   constructor(
     private readonly roleService: RoleService,
     private readonly responseService: ResponseService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @Get('default')
@@ -67,11 +71,30 @@ export class RoleController {
 
   @UseGuards(JwtAuthGuard)
   @Get('list')
-  async fetchRoles(@Req() req: Request, @Res() res: Response): Promise<void> {
+  async fetchRoles(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: { page; perPage; search },
+  ): Promise<void> {
     try {
-      const roles: Role[] = await this.roleService.findAll();
+      const { page, perPage, search } = query;
+      const skip: number = await this.paginationService.skip(page, perPage);
+      const roles: Role[] = await this.roleService.findAll(perPage, skip);
+      const totalData: number = await this.roleService.getTotals();
+      const totalPages: number = await this.paginationService.totalPage(
+        totalData,
+        perPage,
+      );
 
-      this.responseService.json(res, 200, 'Roles found successfully', roles);
+      const meta: MetaData = { totalData, totalPages, page, perPage };
+
+      this.responseService.json(
+        res,
+        200,
+        'Roles found successfully',
+        roles,
+        meta,
+      );
     } catch (error) {
       this.responseService.json(res, error);
     }

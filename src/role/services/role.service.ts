@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
 import { ROLE } from 'src/common/constants/schema.constant';
 import { RoleCreateDTO } from '../dto/role.create.dto';
@@ -11,7 +10,7 @@ import { Role, RoleDocument } from '../schemas/role.schema';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectModel(ROLE, DB_CONNECTION)
+    @InjectModel(ROLE)
     private readonly roleModel: Model<RoleDocument>,
   ) {}
 
@@ -24,10 +23,20 @@ export class RoleService {
     return role;
   }
 
-  async findAll(): Promise<Role[]> {
-    const roles: Role[] = await this.roleModel.find({});
+  async findAll(limit: number, skip: number): Promise<Role[]> {
+    const roles: Role[] = await this.roleModel
+      .find({})
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
 
     return roles;
+  }
+
+  async getTotals(): Promise<number> {
+    const total: number = await this.roleModel.find({}).count();
+
+    return total;
   }
 
   async findOneById(id: string): Promise<Role> {

@@ -15,7 +15,6 @@ import { WebsocketService } from './services/websocket.service';
           schema: MessageSchema,
         },
       ],
-      DB_CONNECTION,
     ),
   ],
   providers: [EventGateway, WebsocketService],

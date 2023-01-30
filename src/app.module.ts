@@ -10,10 +10,10 @@ import { AuthModule } from './common/auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { RoleModule } from './role/role.module';
 import { MigrationModule } from './common/migration/migration.module';
-import { DB_CONNECTION } from './common/constants/database.constant';
 import { NotificationModule } from './common/notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { PaginationModule } from './common/pagination/pagination.module';
 import { OrganizationModule } from './organization/organization.module';
 
 @Module({
@@ -26,9 +26,6 @@ import { OrganizationModule } from './organization/organization.module';
     CourseModule,
     UserModule,
     AuthModule,
-    MongooseModule.forRoot(configuration().database, {
-      connectionName: DB_CONNECTION,
-    }),
     UserModule,
     AuthModule,
     RoleModule,
@@ -36,6 +33,7 @@ import { OrganizationModule } from './organization/organization.module';
     NotificationModule,
     CommentModule,
     WebsocketModule,
+    PaginationModule,
     OrganizationModule,
   ],
   controllers: [AppController],
