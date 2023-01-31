@@ -10,7 +10,7 @@ import { UserSeed } from './migrate.user.seed';
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async () => ({
-        uri: `mongodb+srv://hr-bento:brh2mmzMBBXFvN40@cluster0.8psfm.mongodb.net/online-course?retryWrites=true&w=majority`,
+        uri: process.env.DATABASE_HOST,
       }),
     }),
     CommandModule,
