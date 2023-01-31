@@ -6,19 +6,23 @@ import { UserSchema } from './schemas/user.schema';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { RoleModule } from 'src/role/role.module';
-import { DB_CONNECTION } from 'src/common/constants/database.constant';
 import { NotificationService } from 'src/common/notification/service/notification.service';
+import { ConfigModule } from '@nestjs/config';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature(
-      [{ name: USER, schema: UserSchema }],
-      DB_CONNECTION,
-    ),
+    MongooseModule.forFeature([{ name: USER, schema: UserSchema }]),
     RoleModule,
+    ConfigModule,
   ],
   controllers: [UserController],
-  providers: [UserService, ResponseService, NotificationService],
+  providers: [
+    UserService,
+    ResponseService,
+    NotificationService,
+    PaginationService,
+  ],
   exports: [UserService],
 })
 export class UserModule {}

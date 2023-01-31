@@ -5,12 +5,12 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Request, Response, Express } from 'express';
@@ -20,6 +20,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { DeleteCourseDto } from '../dto/delete-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 import { COURSESTATUS } from '../types';
+import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
+import { GetUser } from 'src/user/decorators/user.decorator';
+import { User } from 'src/user/schemas/user.schema';
+import { BuyCourseDto } from '../dto/buy-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -28,16 +32,18 @@ export class CourseController {
     private readonly courseService: CourseService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   @UseInterceptors(FileInterceptor('file'))
   async createCourse(
     @Req() req: Request,
     @Res() res: Response,
+    @GetUser() user: User,
     @Body() body: CreateCourseDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<any> {
     try {
-      const newCourse = await this.courseService.createCourse(body, file);
+      const newCourse = await this.courseService.createCourse(body, user, file);
 
       this.responseService.json(
         res,
@@ -51,14 +57,24 @@ export class CourseController {
   }
 
   @Post('buy')
-  async buyCourse(@Res() res: Response) {
+  async buy(@Res() res: Response, @Body() data: BuyCourseDto) {
     try {
-      this.courseService.buyCourse('courseid', 'organization id');
+      this.courseService.buy(data);
     } catch (error) {
       this.responseService.json(res, error);
     }
   }
 
+  @Post('pay')
+  async makePayment(@Res() res: Response, @Body() data: BuyCourseDto) {
+    try {
+      this.courseService.buy(data);
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('list')
   async getCourses(@Res() res: Response): Promise<any> {
     try {
@@ -74,6 +90,7 @@ export class CourseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:id')
   async getCourse(
     @Res() res: Response,
@@ -92,6 +109,7 @@ export class CourseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id/delete')
   async deleteCourse(
     @Res() res: Response,
@@ -111,6 +129,7 @@ export class CourseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('/:id/update')
   async updateCourse(
     @Res() res: Response,
@@ -134,6 +153,7 @@ export class CourseController {
     }
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Put('/:id/update-status')
   async updateCourseStatus(
     @Res() res: Response,

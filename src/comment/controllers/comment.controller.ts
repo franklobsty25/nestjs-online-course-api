@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -13,6 +14,8 @@ import {
 import { Request, Response } from 'express';
 import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
+import { MetaData } from 'src/common/pagination/interface/meta_interface';
+import { PaginationService } from 'src/common/pagination/pagination.service';
 import { ResponseService } from 'src/common/response/response.service';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { User } from 'src/user/schemas/user.schema';
@@ -28,6 +31,7 @@ export class CommentController {
   constructor(
     private readonly commentService: CommentService,
     private readonly responseService: ResponseService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -57,15 +61,67 @@ export class CommentController {
 
   @UseGuards(JwtAuthGuard)
   @Get('list')
-  async findComments(@Req() req: Request, @Res() res: Response): Promise<void> {
+  async findComments(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: { page: number; perPage: number; search: string },
+  ): Promise<void> {
     try {
-      const comments: CommentDocument[] = await this.commentService.findAll();
+      const { page, perPage, search } = query;
+      const skip: number = await this.paginationService.skip(page, perPage);
+      const comments: CommentDocument[] = await this.commentService.findAll(
+        perPage,
+        skip,
+      );
+      const totalData: number = await this.commentService.getAllTotals();
+      const totalPages: number = await this.paginationService.totalPage(
+        totalData,
+        perPage,
+      );
+
+      const meta: MetaData = { totalData, totalPages, page, perPage };
 
       this.responseService.json(
         res,
         200,
         'comments found successfully',
         comments,
+        meta,
+      );
+    } catch (error) {
+      this.responseService.json(res, error);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  async search(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: { page: number; perPage: number; search: string },
+  ): Promise<void> {
+    try {
+      const { page, perPage, search } = query;
+      const skip: number = await this.paginationService.skip(page, perPage);
+      const comments: CommentDocument[] = await this.commentService.find(
+        search,
+        perPage,
+        skip,
+      );
+      const totalData: number = await this.commentService.getTotal(search);
+      const totalPages: number = await this.paginationService.totalPage(
+        totalData,
+        perPage,
+      );
+
+      const meta: MetaData = { totalData, totalPages, page, perPage };
+
+      this.responseService.json(
+        res,
+        200,
+        'Comments found successfully',
+        comments,
+        meta,
       );
     } catch (error) {
       this.responseService.json(res, error);

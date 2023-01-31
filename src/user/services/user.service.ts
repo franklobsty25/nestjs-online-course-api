@@ -18,17 +18,17 @@ import { UserChangePasswordDTO } from '../dto/user.change-password';
 import { Role } from 'src/role/schemas/role.schema';
 import { RoleService } from 'src/role/services/role.service';
 import { ROLE_ENUM } from 'src/common/constants/role.enum.constant';
-import { DB_CONNECTION } from 'src/common/constants/database.constant';
+import { IUser } from '../interface/user.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(USER, DB_CONNECTION) private userModel: Model<UserDocument>,
+    @InjectModel(USER) private userModel: Model<UserDocument>,
     private readonly roleService: RoleService,
   ) {}
 
-  async create(createUserDTO: UserCreateDTO): Promise<User> {
-    const { firstName, lastName, organization, phoneNumber, email, password } =
+  async create(createUserDTO: UserCreateDTO): Promise<IUser> {
+    const { firstName, lastName, institution, phoneNumber, email, password } =
       createUserDTO;
 
     const hashed: string = await hashPassword(password);
@@ -37,25 +37,23 @@ export class UserService {
 
     if (!role) throw new BadRequestException('Roles does not exist');
 
-    let user: User;
-
     try {
-      user = await this.userModel.create({
+      const user: IUser = await this.userModel.create({
         firstName,
         lastName,
-        organization,
+        institution,
         phoneNumber,
         email,
         password: hashed,
         role,
       });
+
+      if (!user) throw new BadRequestException(`User failed to be created`);
+
+      return user;
     } catch (error) {
-      throw new Error('Email already exist');
+      throw new Error('Email already exists');
     }
-
-    if (!user) throw new BadRequestException(`User failed to be created`);
-
-    return user;
   }
 
   async createAdmin(role: Role): Promise<User> {
@@ -74,10 +72,20 @@ export class UserService {
     return user;
   }
 
-  async findAllUsers(): Promise<User[]> {
-    const users: User[] = await this.userModel.find({});
+  async findAllUsers(limit?: number, skip?: number): Promise<User[]> {
+    const users: User[] = await this.userModel
+      .find({})
+      .populate('role')
+      .limit(limit)
+      .skip(skip);
 
     return users;
+  }
+
+  async getTotalUsers(): Promise<number> {
+    const total: number = await this.userModel.find({}).count();
+
+    return total;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -90,6 +98,28 @@ export class UserService {
 
   async findById(id: string): Promise<User> {
     const user: User = await this.userModel.findById(id).select('+password');
+
+    return user;
+  }
+
+  async getTotalUser(search: string): Promise<number> {
+    const total: number = await this.userModel
+      .find(
+        { firstName: search },
+        { lastName: search },
+        { institution: search },
+      )
+      .count();
+
+    return total;
+  }
+
+  async find(search: string, limit: number, skip: number): Promise<User[]> {
+    const user: User[] = await this.userModel
+      .find({ firstName: search })
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
 
     return user;
   }

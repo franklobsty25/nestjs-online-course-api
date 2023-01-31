@@ -4,16 +4,16 @@ import { Response } from 'express';
 import { get, isNil, isEmpty } from 'lodash';
 
 export class ResponseObject<T> {
-  @ApiProperty({description: 'Error code'})
+  @ApiProperty({ description: 'Error code' })
   code?: string;
 
-  @ApiProperty({description: 'Response message'})
+  @ApiProperty({ description: 'Response message' })
   message?: string;
 
-  @ApiProperty({description: 'Response data'})
+  @ApiProperty({ description: 'Response data' })
   data?: T;
 
-  @ApiProperty({description: 'Response meta'})
+  @ApiProperty({ description: 'Response meta' })
   meta?: any;
 }
 
@@ -26,6 +26,7 @@ export class ResponseService {
     statusOrError: number | Error,
     message?: string,
     data?: Record<string, any> | Array<Record<string, any>> | T,
+    meta?: any,
     code?: string,
   ): void {
     const error = statusOrError instanceof Error ? statusOrError : null;
@@ -43,6 +44,10 @@ export class ResponseService {
 
     if (!isNil(data)) {
       response.data = data;
+    }
+
+    if (!isNil(meta)) {
+      response.meta = meta;
     }
 
     if (!isEmpty(code)) {

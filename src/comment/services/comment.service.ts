@@ -11,7 +11,7 @@ import { CommentDocument } from '../schemas/comment.schema';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(COMMENT, DB_CONNECTION)
+    @InjectModel(COMMENT)
     private readonly commentModel: Model<CommentDocument>,
   ) {}
 
@@ -21,16 +21,26 @@ export class CommentService {
   ): Promise<CommentDocument> {
     const comment: CommentDocument = await this.commentModel.create({
       ...commentDTO,
-      creator: user,
+      creator: user, //@TODO user to be replaced by organization
     });
 
     return comment;
   }
 
-  async findAll(): Promise<CommentDocument[]> {
-    const comments: CommentDocument[] = await this.commentModel.find({});
+  async findAll(limit: number, skip: number): Promise<CommentDocument[]> {
+    const comments: CommentDocument[] = await this.commentModel
+      .find({})
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
 
     return comments;
+  }
+
+  async getAllTotals(): Promise<number> {
+    const total = await this.commentModel.find({}).count();
+
+    return total;
   }
 
   async findOneById(commentId: string): Promise<CommentDocument> {
@@ -39,6 +49,28 @@ export class CommentService {
     );
 
     return comment;
+  }
+
+  async getTotal(search: string): Promise<number> {
+    const total: number = await this.commentModel
+      .find({ message: search })
+      .count();
+
+    return total;
+  }
+
+  async find(
+    search: string,
+    limit: number,
+    skip: number,
+  ): Promise<CommentDocument[]> {
+    const comments: CommentDocument[] = await this.commentModel
+      .find({ message: search })
+      .limit(limit)
+      .skip(skip)
+      .sort('asc');
+
+    return comments;
   }
 
   async update(
