@@ -17,7 +17,7 @@ import { UpdateEmployeeDTO } from '../dto/employee.update.dto';
 import { EmployeeDocument } from '../schemas/employee.schema';
 import { EmployeeService } from '../services/employee.service';
 
-@Controller('employees')
+@Controller({ path: 'api/v1/employees' })
 export class EmployeeController {
   constructor(
     private readonly employeeService: EmployeeService,
