@@ -10,13 +10,14 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
 import { CreateEmployeeDTO } from '../dto/employee.create.dto';
 import { UpdateEmployeeDTO } from '../dto/employee.update.dto';
 import { EmployeeDocument } from '../schemas/employee.schema';
 import { EmployeeService } from '../services/employee.service';
-
+@ApiTags('Employees')
 @Controller({ path: 'api/v1/employees' })
 export class EmployeeController {
   constructor(
