@@ -1,14 +1,17 @@
 import { ResponseService } from 'src/common/response/response.service';
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Res } from '@nestjs/common';
 import { OrganizationService } from '../services/organization.service';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('organizations')
+@ApiTags('Organization')
+@Controller({ path: 'api/v1/organizations' })
 export class OrganizationController {
   constructor(
     private readonly responseService: ResponseService,
     private readonly organizationService: OrganizationService,
   ) {}
+
   @Get('list')
   async getOrganizations(@Res() res: Response): Promise<any> {
     try {
@@ -25,6 +28,7 @@ export class OrganizationController {
     }
   }
 
+  @Get(':id')
   async getOrganization(@Res() res: Response, @Param() { id }: { id: string }) {
     try {
       const organization = await this.organizationService.getOrganization(id);
@@ -39,6 +43,7 @@ export class OrganizationController {
     }
   }
 
+  @Delete(':id')
   async deleteOrganization(
     @Res() res: Response,
     @Param() { id }: { id: string },

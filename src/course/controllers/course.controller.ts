@@ -24,8 +24,10 @@ import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { User } from 'src/user/schemas/user.schema';
 import { BuyCourseDto } from '../dto/buy-course.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('courses')
+@ApiTags('Course')
+@Controller({ path: 'api/v1/courses' })
 export class CourseController {
   constructor(
     private readonly responseService: ResponseService,

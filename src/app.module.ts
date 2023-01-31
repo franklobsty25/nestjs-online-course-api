@@ -15,6 +15,8 @@ import { CommentModule } from './comment/comment.module';
 import { WebsocketModule } from './websocket/websocket.module';
 import { PaginationModule } from './common/pagination/pagination.module';
 import { OrganizationModule } from './organization/organization.module';
+import { ReminderService } from './common/reminder/reminder.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { OrganizationModule } from './organization/organization.module';
       load: [configuration],
     }),
     MongooseModule.forRoot(configuration().database),
+    ScheduleModule.forRoot(),
     CourseModule,
     UserModule,
     AuthModule,
@@ -37,6 +40,6 @@ import { OrganizationModule } from './organization/organization.module';
     OrganizationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ResponseService],
+  providers: [AppService, ResponseService, ReminderService],
 })
 export class AppModule {}

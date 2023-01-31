@@ -44,7 +44,7 @@ import { UserService } from '../services/user.service';
 
 @ApiTags('User')
 @ApiBearerAuth('Bearer Token')
-@Controller('users')
+@Controller({ path: 'api/v1/users' })
 export class UserController {
   private readonly logger = new Logger();
 

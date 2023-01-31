@@ -29,7 +29,7 @@ import { CommentService } from '../services/comment.service';
 
 @ApiTags('Comment')
 @ApiBearerAuth('Bearer Token')
-@Controller('comments')
+@Controller({ path: 'api/v1/comments' })
 export class CommentController {
   constructor(
     private readonly commentService: CommentService,
