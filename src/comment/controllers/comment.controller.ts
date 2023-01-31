@@ -11,7 +11,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
@@ -28,7 +28,7 @@ import { CommentDocument } from '../schemas/comment.schema';
 import { CommentService } from '../services/comment.service';
 
 @ApiTags('Comment')
-@ApiBearerAuth('Bearer Token')
+@ApiBearerAuth('defaultBearerAuth')
 @Controller({ path: 'api/v1/comments' })
 export class CommentController {
   constructor(
@@ -131,6 +131,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
@@ -147,6 +148,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
@@ -174,6 +176,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthAccessGuard)
   @UseGuards(JwtAuthGuard)
@@ -199,6 +202,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthGuard)
   @Patch(':id/active')
@@ -218,6 +222,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthGuard)
   @Patch(':id/inactive')
@@ -237,6 +242,7 @@ export class CommentController {
     }
   }
 
+  @ApiParam({ name: 'commentId' })
   @CommentFromParamGuard()
   @UseGuards(JwtAuthGuard)
   @Patch(':id/soft-delete')

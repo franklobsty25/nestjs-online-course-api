@@ -11,7 +11,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
 import { MetaData } from 'src/common/pagination/interface/meta_interface';
@@ -25,7 +25,7 @@ import { Role } from '../schemas/role.schema';
 import { RoleService } from '../services/role.service';
 
 @ApiTags('Role')
-@ApiBearerAuth('Bearer Token')
+@ApiBearerAuth('defaultBearerAuth')
 @Controller({ path: 'api/v1/roles' })
 export class RoleController {
   constructor(
@@ -100,6 +100,7 @@ export class RoleController {
     }
   }
 
+  @ApiParam({ name: 'roleId' })
   @RoleParamGuard()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -111,6 +112,7 @@ export class RoleController {
     this.responseService.json(res, 200, 'Role found successfully', role);
   }
 
+  @ApiParam({ name: 'roleId' })
   @RoleParamGuard()
   @UseGuards(JwtAuthGuard)
   @Put(':id/update')
@@ -129,6 +131,7 @@ export class RoleController {
     }
   }
 
+  @ApiParam({ name: 'roleId' })
   @RoleParamGuard()
   @Patch(':id/active')
   async activeRole(
@@ -145,6 +148,7 @@ export class RoleController {
     }
   }
 
+  @ApiParam({ name: 'roleId' })
   @RoleParamGuard()
   @Patch(':id/inactive')
   async inActiveRole(
@@ -161,6 +165,7 @@ export class RoleController {
     }
   }
 
+  @ApiParam({ name: 'roleId' })
   @RoleParamGuard()
   @UseGuards(JwtAuthGuard)
   @Delete(':id/delete')

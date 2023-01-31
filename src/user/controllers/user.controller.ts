@@ -15,7 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { JwtAuthAccessGuard } from 'src/common/auth/guards/jwt-auth-access.guard';
 import { JwtAuthGuard } from 'src/common/auth/guards/jwt-auth.guard';
@@ -43,7 +43,7 @@ import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 
 @ApiTags('User')
-@ApiBearerAuth('Bearer Token')
+@ApiBearerAuth('defaultBearerAuth')
 @Controller({ path: 'api/v1/users' })
 export class UserController {
   private readonly logger = new Logger();
@@ -210,6 +210,7 @@ export class UserController {
     }
   }
 
+  @ApiParam({ name: 'userId' })
   @UserParamGuard()
   @UseGuards(JwtAuthGuard)
   @Patch(':id/active')
@@ -227,6 +228,7 @@ export class UserController {
     }
   }
 
+  @ApiParam({ name: 'userId' })
   @UserParamGuard()
   @UseGuards(JwtAuthGuard)
   @Patch(':id/inactive')
@@ -266,6 +268,7 @@ export class UserController {
     }
   }
 
+  @ApiParam({ name: 'userId' })
   @UserParamGuard()
   @UseGuards(JwtAuthGuard)
   @Delete(':id/delete')
@@ -288,6 +291,7 @@ export class UserController {
     }
   }
 
+  @ApiParam({ name: 'roleId '})
   @UseGuards(JwtAuthGuard)
   @Patch('role/update')
   async changeUserRole(

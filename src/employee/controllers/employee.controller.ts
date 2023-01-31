@@ -10,7 +10,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
 import { CreateEmployeeDTO } from '../dto/employee.create.dto';
