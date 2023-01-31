@@ -13,6 +13,7 @@ import { MigrationModule } from './common/migration/migration.module';
 import { NotificationModule } from './common/notification/notification.module';
 import { CommentModule } from './comment/comment.module';
 import { WebsocketModule } from './websocket/websocket.module';
+import { EmployeeModule } from './employee/employee.module';
 import { PaginationModule } from './common/pagination/pagination.module';
 import { OrganizationModule } from './organization/organization.module';
 import { ReminderService } from './common/reminder/reminder.service';
@@ -36,6 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     NotificationModule,
     CommentModule,
     WebsocketModule,
+    EmployeeModule,
     PaginationModule,
     OrganizationModule,
   ],
