@@ -24,7 +24,8 @@
     "rollback:role": "nestjs-command remove:role",
     "rollback:user": "nestjs-command remove:user",
     "seed": "yarn seed:role && yarn seed:user",
-    "rollback": "yarn rollback:user && yarn rollback:role"
+    "rollback": "yarn rollback:user && yarn rollback:role",
+    "deploy": "yarn install && yarn build && yarn start:dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.254.0",
